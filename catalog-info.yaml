@@ -1,0 +1,78 @@
+# Catalog Service template
+# Please follow all comments to update values.
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  # Name of the service, required
+  name: typeid
+  # Human readable version of the name of the service, required
+  title: Typeid
+  # Short and crisp description of the service, required
+  description: TypeIDs are type-safe, globally unique identifiers based on UUIDv7 and UUIDv4 standard.
+  annotations:
+    # Slug of the GitHub repo, required
+    github.com/project-slug: sumup/typeid
+    # Location of the mkdocs.yml file, optional
+    #backstage.io/techdocs-ref: dir:./docs
+  # Tags that identify the service by characteristics, required:
+  # - pii, if service deals with personal identifiable information)
+  # - pci, if service is located in the PCI zone (deals with payments related data)
+  # - critical-path, if service needs immediate response in case of incident
+  # - externally-exposed, if API is reachable through wwww
+  # Example: [critical-path, pii]
+  tags: [ ]
+  links: [ ]
+    # Link to Alerts Runbook, required
+    #- title: Alerts Runbook
+    #  url: https://sumupteam.atlassian.net/wiki/spaces/DEV/pages/2517664574/Ecom+Platform+Squad+Runbook
+    # Link to Confluence Team page, optional
+    #- title: Confluence Page
+    #  url: https://sumupteam.atlassian.net/wiki/spaces/DEV/pages/554239270/Ecom+Platform+Squad
+    # Link to Slack channel for service alerts, required
+    #- title: Slack Alert Channel
+    #  url: https://sumup.slack.com/archives/CC1GHFV3P
+    # Link to Slack support channel for service (e.g. team/squad channel), required
+    #- title: Slack Support Channel
+    #  url: https://sumup.slack.com/archives/CC1GHFV3P
+    # Link to Grafana dashboards, recommended
+    #- title: Grafana
+    #  url: https://grafana.sam-app.ro/dashboards/f/yN_aXbBGz/ecom-platform
+    #  type: telemetry
+    # Link to Honeycomb dashboards, recommended
+    #- title: Honeycomb
+    #  url: https://ui.honeycomb.io/sumup/board/A3ThTUE4rXf/Ecom-Platform
+    #  type: telemetry
+spec:
+  # Defines the type of Component (service, website, library, see https://backstage.io/docs/features/software-catalog/descriptor-format#spectype-required), required
+  type: unspecified
+  # Marks the state of the service (production, experimental, deprecated, see https://backstage.io/docs/features/software-catalog/descriptor-format#speclifecycle-required), required
+  lifecycle: unspecified
+  # GitHub team owner, see https://github.com/orgs/sumup/teams, required
+  owner: unspecified
+  # The system this Component is part of, recommended
+  system: unspecified
+  # List of API's the service exposes, reference name from the API definition section below, required
+  # If adding the API's is a blocker, slack #backstage to get our help
+  providesApis: [ ]
+  # List of API's the service is connected to, see openapi or https://sumup.roadie.so/api-docs, required
+  consumesApis: [ ]
+#---
+# API definition example
+#apiVersion: backstage.io/v1alpha1
+#kind: API
+#metadata:
+#  name: typeid-api
+#  title: Typeid API
+#  # add [externally-exposed] if API is reachable through wwww, required if applicable
+#  tags: [ ]
+#  # API description, required
+#  description: |
+#    Sample API description.
+#spec:
+#  type: openapi
+#  # Marks the state of the API (production, experimental, deprecated, see https://backstage.io/docs/features/software-catalog/descriptor-format#speclifecycle-required), required
+#  lifecycle: unspecified
+#  # Github team owner, see https://github.com/orgs/sumup/teams, required
+#  owner: unspecified
+#  definition:
+#    $text: https://github.com/sumup/ecom-platform/blob/master/apps/vatcalculator/docs/index.yaml
