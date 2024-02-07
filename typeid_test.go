@@ -7,8 +7,6 @@ import (
 	"testing/quick"
 
 	"github.com/gofrs/uuid/v5"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 const (
@@ -44,25 +42,42 @@ func TestTypeID_New(t *testing.T) {
 	t.Parallel()
 
 	userID, err := New[UserID]()
-	require.NoError(t, err, "can create userid")
-	assert.Equal(t, uuid.V4, userID.UUID().Version())
+	if err != nil {
+		t.Fatalf("create UserID: unexpected error:\n%+v", err)
+	}
+	if uuid.V4 != userID.UUID().Version() {
+		t.Errorf("expected UUIDv4, got version byte: %x", userID.UUID().Version())
+	}
 
 	accountID, err := New[AccountID]()
-	require.NoError(t, err, "can create accountID")
-	assert.Equal(t, uuid.V7, accountID.UUID().Version())
+	if err != nil {
+		t.Fatalf("create AserID: unexpected error:\n%+v", err)
+	}
+	if uuid.V7 != accountID.UUID().Version() {
+		t.Errorf("expected UUIDv7, got version byte: %x", accountID.UUID().Version())
+	}
 }
 
 func TestTypeID_Nil(t *testing.T) {
 	t.Parallel()
 
 	nilUserID := Nil[UserID]()
-	assert.Equal(t, "user_"+emptyID, nilUserID.String())
-	assert.Equal(t, nilUserID, Nil[UserID](), "two nil id's are equal")
+	if "user_"+emptyID != nilUserID.String() {
+		t.Errorf("expected nil user id, got: %s", nilUserID.String())
+	}
+	if nilUserID != Nil[UserID]() {
+		t.Errorf("two nil id's are equal\nGot: %v\nExpected: %v", nilUserID, Nil[UserID]())
+	}
+
 	nilAccountID := Nil[AccountID]()
-	assert.Equal(t, "account_"+emptyID, nilAccountID.String())
+	if "account_"+emptyID != nilAccountID.String() {
+		t.Errorf("expected nil account id, got: %s", nilAccountID.String())
+	}
 
 	nilID := Nil[NilID]()
-	assert.Equal(t, emptyID, nilID.String())
+	if emptyID != nilID.String() {
+		t.Errorf("two nil id's are equal\nGot: %v\nExpected: %v", emptyID, nilID.String())
+	}
 }
 
 func TestTypeID_ToFrom(t *testing.T) {
@@ -110,7 +125,9 @@ func runToFromQuickTests[T idImplementation[P], P Prefix](t *testing.T) {
 func fromStringTester[T idImplementation[P], P Prefix](t *testing.T) func(wid wrappedID[T, P]) bool {
 	return func(wid wrappedID[T, P]) bool {
 		parsedID, err := FromString[T](wid.ID().String())
-		require.NoError(t, err, "can parse typeid from string")
+		if err != nil {
+			t.Fatalf("parse type id from string: unexpected error:\n%+v", err)
+		}
 		return wid.ID() == parsedID
 	}
 }
@@ -118,7 +135,9 @@ func fromStringTester[T idImplementation[P], P Prefix](t *testing.T) func(wid wr
 func fromUUIDTester[T idImplementation[P], P Prefix](t *testing.T) func(wid wrappedID[T, P]) bool {
 	return func(wid wrappedID[T, P]) bool {
 		parsedID, err := FromUUID[T](wid.ID().UUID())
-		require.NoError(t, err, "can parse typeid from string")
+		if err != nil {
+			t.Fatalf("parse type id from UUID: unexpected error:\n%+v", err)
+		}
 		return wid.ID() == parsedID
 	}
 }
@@ -126,7 +145,9 @@ func fromUUIDTester[T idImplementation[P], P Prefix](t *testing.T) func(wid wrap
 func fromUUIDStringTester[T idImplementation[P], P Prefix](t *testing.T) func(wid wrappedID[T, P]) bool {
 	return func(wid wrappedID[T, P]) bool {
 		parsedID, err := FromUUIDStr[T](wid.ID().UUID().String())
-		require.NoError(t, err, "can parse typeid from uuid string")
+		if err != nil {
+			t.Fatalf("parse type id from UUID string: unexpected error:\n%+v", err)
+		}
 		return wid.ID() == parsedID
 	}
 }
@@ -134,7 +155,9 @@ func fromUUIDStringTester[T idImplementation[P], P Prefix](t *testing.T) func(wi
 func fromUUIDBytesTester[T idImplementation[P], P Prefix](t *testing.T) func(wid wrappedID[T, P]) bool {
 	return func(wid wrappedID[T, P]) bool {
 		parsedID, err := FromUUIDBytes[T](wid.id.UUID().Bytes())
-		require.NoError(t, err, "can parse typeid from uuid bytes")
+		if err != nil {
+			t.Fatalf("parse type id from UUID bytes: unexpected error:\n%+v", err)
+		}
 		return wid.ID() == parsedID
 	}
 }

@@ -5,9 +5,6 @@ import (
 	"encoding/base32"
 	"testing"
 	"testing/quick"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestEncodeDecode(t *testing.T) {
@@ -40,7 +37,9 @@ func TestEncodeDecode(t *testing.T) {
 				// Generate 16 random bytes
 				data := make([]byte, 16)
 				_, err := rand.Read(data)
-				assert.NoError(t, err)
+				if err != nil {
+					t.Fatalf("unexpected error:\n%+v", err)
+				}
 
 				// Encode them using our library, and encode them using go's standard library:
 				actual := tc.EncodeFunc([16]byte(data))
@@ -53,13 +52,19 @@ func TestEncodeDecode(t *testing.T) {
 				expected := tc.stdLibEncoder.EncodeToString(padded)[6:]
 
 				// They should be equal
-				assert.Equal(t, expected, actual)
+				if expected != actual {
+					t.Errorf("padded value is not equal to exted:\nExpected: %s\nActual: %s", expected, actual)
+				}
 
 				// Decoding again should yield the original result:
 				decoded, err := tc.DecodeFunc(actual)
-				assert.NoError(t, err)
+				if err != nil {
+					t.Errorf("unexpected error during decode:\n%+v", err)
+				}
 				for i := 0; i < 16; i++ {
-					assert.Equal(t, data[i], decoded[i])
+					if data[i] != decoded[i] {
+						t.Errorf("decoded value is not equal to original:\nExpected: %v\nActual: %v", data[i], decoded[i])
+					}
 				}
 			}
 		})
@@ -71,7 +76,9 @@ func TestEncodeDecode(t *testing.T) {
 		// Generate 16 random bytes
 		data := make([]byte, 16)
 		_, err := rand.Read(data)
-		assert.NoError(t, err)
+		if err != nil {
+			t.Fatalf("unexpected error:\n%+v", err)
+		}
 
 		// Encode them using our library, and encode them using go's standard library:
 		actual := EncodeUpper([16]byte(data))
@@ -84,13 +91,19 @@ func TestEncodeDecode(t *testing.T) {
 		expected := encoder.EncodeToString(padded)[6:]
 
 		// They should be equal
-		assert.Equal(t, expected, actual)
+		if expected != actual {
+			t.Errorf("padded value is not equal to exted:\nExpected: %s\nActual: %s", expected, actual)
+		}
 
 		// Decoding again should yield the original result:
 		decoded, err := DecodeUpper(actual)
-		assert.NoError(t, err)
+		if err != nil {
+			t.Errorf("unexpected error during decode:\n%+v", err)
+		}
 		for i := 0; i < 16; i++ {
-			assert.Equal(t, data[i], decoded[i])
+			if data[i] != decoded[i] {
+				t.Errorf("decoded value is not equal to original:\nExpected: %v\nActual: %v", data[i], decoded[i])
+			}
 		}
 	}
 }
@@ -101,7 +114,9 @@ func TestEncodeDecodeProp(t *testing.T) {
 	f := func(input [16]byte) bool {
 		enc := EncodeUpper(input)
 		dec, err := DecodeUpper(enc)
-		require.NoError(t, err)
+		if err != nil {
+			t.Errorf("decode: received unexpected error:\n%+v", err)
+		}
 		return input == [16]byte(dec)
 	}
 

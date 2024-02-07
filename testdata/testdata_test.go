@@ -261,12 +261,6 @@ func TestValidIDs(t *testing.T) {
 	}
 }
 
-type InvalidExample struct {
-	Name        string `yaml:"name"`
-	Tid         string `yaml:"typeid"`
-	Description string `yaml:"description"`
-}
-
 // For testing purposes, we use a gloabal variable to enable the dynamicPrefix type to return different prefixes.
 // Multiple test cases using this type cannot run in parallel.
 var (
