@@ -42,7 +42,7 @@ prefix type as generic argument.
 Example:
 
 ```go
-import "github.com/sumup/x/typeid"
+import "github.com/sumup/typeid"
 
 type UserPrefix struct{}
 

@@ -5,7 +5,7 @@ import (
 
 	"github.com/gofrs/uuid/v5"
 	"github.com/jackc/pgx/v5/pgtype"
-	"github.com/sumup/x/typeid/base32"
+	"github.com/sumup/typeid/base32"
 )
 
 // Random represents an unique identifier that is entirely random.

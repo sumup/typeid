@@ -27,7 +27,7 @@
 //
 // Example:
 //
-//	import "github.com/sumup/x/typeid"
+//	import "github.com/sumup/typeid"
 //
 //	type UserPrefix struct{}
 //
