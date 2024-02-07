@@ -14,6 +14,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
+github.com/sumup/typeid v0.0.0-20240206140246-59779c927c60 h1:mH1bfCjvzAvzo+GVfTzPpwkjy2NIQTz1w8N4/GTs9Pk=
+github.com/sumup/typeid v0.0.0-20240206140246-59779c927c60/go.mod h1:kNiEBvBXdQGyx5+BSaKzzzVrDsIKQz5q3mvEy18xrNw=
 github.com/sumup/x v0.0.0-20240205105019-4312e7701e82 h1:LRJWRUng6h6FXpArj53PTP9ScZXyVcGUvE2FEuM7hHs=
 github.com/sumup/x v0.0.0-20240205105019-4312e7701e82/go.mod h1:GMY9EAQMiLm5mIEYBUoAsuC8SuOrqCu6D88zTikS5Xo=
 go.jetpack.io/typeid v1.0.0 h1:8gQ+iYGdyiQ0Pr40ydSB/PzMOIwlXX5DTojp1CBeSPQ=

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/sumup/x/typeid"
+	"github.com/sumup/typeid"
 	jpTypeId "go.jetpack.io/typeid"
 )
 
