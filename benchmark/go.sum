@@ -16,6 +16,8 @@ github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcU
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 github.com/sumup/typeid v0.0.0-20240207125954-757b87eaff3c h1:jHCDCEs+alb1DCheUJxR7IlXKr6Qn7cFUBVoZrxZoyQ=
 github.com/sumup/typeid v0.0.0-20240207125954-757b87eaff3c/go.mod h1:gMQ6rvv9//+PumvkKu1tAOyXW/u9Pwg1dkbPWhQ62vk=
+go.jetpack.io/typeid v0.1.0 h1:suTmjNR3y2em2gCTG06agFfcACm3+zuxfziMUk5UXnw=
+go.jetpack.io/typeid v0.1.0/go.mod h1:E11ObFkKlvsSTxwwYIm+zpbsRthjIMDy/JGBogs2vSo=
 go.jetpack.io/typeid v1.0.0 h1:8gQ+iYGdyiQ0Pr40ydSB/PzMOIwlXX5DTojp1CBeSPQ=
 go.jetpack.io/typeid v1.0.0/go.mod h1:+UPEaECUgFxgAjFPn5Yf9eO/3ft/3xZ98Eahv9JW/GQ=
 golang.org/x/crypto v0.18.0 h1:PGVlW0xEltQnzFZ55hkuX5+KLyrMYhHld1YHO4AKcdc=

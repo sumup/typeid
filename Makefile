@@ -4,6 +4,10 @@
 help: ## Show help
 	@grep -Eh '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+.PHONY: bench
+bench: ## Run benchmarks
+	cd benchmark && go test -bench=. -benchmem -benchtime=5s
+
 .PHONY: fmt
 fmt: ## Format go files
 	goimports -w .

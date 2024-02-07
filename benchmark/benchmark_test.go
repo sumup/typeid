@@ -9,7 +9,7 @@ import (
 )
 
 func BenchmarkNew(b *testing.B) {
-	b.Run("sumup/x/typeid", func(b *testing.B) {
+	b.Run("sumup/typeid", func(b *testing.B) {
 		b.Run("Random", func(b *testing.B) {
 			b.ReportAllocs()
 			for i := 0; i < b.N; i++ {
@@ -36,7 +36,7 @@ func BenchmarkNew(b *testing.B) {
 }
 
 func BenchmarkString(b *testing.B) {
-	b.Run("sumup/x/typeid", func(b *testing.B) {
+	b.Run("sumup/typeid", func(b *testing.B) {
 		b.Run("Random", func(b *testing.B) {
 			b.Run(benchStringRandom(1))
 			b.Run(benchStringRandom(8))
@@ -60,7 +60,7 @@ func BenchmarkString(b *testing.B) {
 }
 
 func BenchmarkFromString(b *testing.B) {
-	b.Run("sumup/x/typeid", func(b *testing.B) {
+	b.Run("sumup/typeid", func(b *testing.B) {
 		b.Run("Random", func(b *testing.B) {
 			b.Run(benchFromStringRandom(1))
 			b.Run(benchFromStringRandom(8))
@@ -125,6 +125,7 @@ func benchStringJp(n int) (string, func(*testing.B)) {
 func benchFromStringRandom(n int) (string, func(*testing.B)) {
 	idStrings := toString(makeRandomIDs(n))
 	return fmt.Sprintf("n=%d", n), func(b *testing.B) {
+		b.ResetTimer()
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			for idx := range idStrings {
@@ -139,6 +140,7 @@ func benchFromStringRandom(n int) (string, func(*testing.B)) {
 func benchFromStringSortable(n int) (string, func(*testing.B)) {
 	idStrings := toString(makeSortableIDs(n))
 	return fmt.Sprintf("n=%d", n), func(b *testing.B) {
+		b.ResetTimer()
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			//nolint:errcheck // Benchmark.
@@ -154,6 +156,7 @@ func benchFromStringSortable(n int) (string, func(*testing.B)) {
 func benchFromStringJetpack(n int) (string, func(*testing.B)) {
 	idStrings := toString(makeJpTypeIDs(n))
 	return fmt.Sprintf("n=%d", n), func(b *testing.B) {
+		b.ResetTimer()
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			for idx := range idStrings {
@@ -202,7 +205,7 @@ func toString[T stringable](in []T) []string {
 }
 
 func BenchmarkEncodeDecode(b *testing.B) {
-	b.Run("sumup/x/typeid", func(b *testing.B) {
+	b.Run("sumup/typeid", func(b *testing.B) {
 		b.Run("Random", func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
 				tid := typeid.MustNew[RandomTestID]()
