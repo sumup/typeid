@@ -46,6 +46,6 @@
 // [UUIDv7 standard]: https://www.ietf.org/archive/id/draft-peabody-dispatch-new-uuid-format-01.html#name-versions
 //
 // [UUIDv4 standard]: https://datatracker.ietf.org/doc/html/rfc4122
-package main
+package typeid
 
 //go:generate godoc-readme-gen -f -title "github.com/sumup/typeid"

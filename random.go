@@ -1,4 +1,4 @@
-package main
+package typeid
 
 import (
 	"database/sql/driver"
