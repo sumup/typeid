@@ -2,6 +2,7 @@ package typeid
 
 import (
 	"fmt"
+	"unsafe"
 
 	"github.com/gofrs/uuid/v5"
 )
@@ -11,6 +12,8 @@ import (
 type processor struct {
 	// b32Encode applies a base32 encoding to a UUID.
 	b32Encode func(uuid.UUID) string
+	// b32EncodeTo applies a base32 encoding to a UUID and copies the result into a provided 26-byte buffer.
+	b32EncodeTo func([]byte, uuid.UUID)
 	// b32Decode decode a UUID using the resp. base32 decoding.
 	b32Decode func(string) (uuid.UUID, error)
 	// Generates a new universal unique identifer.
@@ -89,5 +92,11 @@ func toString[P Prefix](suffix uuid.UUID, p *processor) string {
 	if prefix == "" {
 		return p.b32Encode(suffix)
 	}
-	return prefix + "_" + p.b32Encode(suffix)
+
+	buf := make([]byte, len(prefix)+1+suffixStrLen)
+	copy(buf, prefix)
+	copy(buf[len(prefix):], "_")
+	p.b32EncodeTo(buf[len(prefix)+1:], suffix)
+
+	return unsafe.String(unsafe.SliceData(buf), len(buf))
 }

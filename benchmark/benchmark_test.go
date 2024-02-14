@@ -86,6 +86,7 @@ func BenchmarkFromString(b *testing.B) {
 func benchStringRandom(n int) (string, func(*testing.B)) {
 	ids := makeSortableIDs(n)
 	return fmt.Sprintf("n=%d", n), func(b *testing.B) {
+		b.ResetTimer()
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			for idx := range ids {
@@ -99,6 +100,7 @@ func benchStringRandom(n int) (string, func(*testing.B)) {
 func benchStringSortable(n int) (string, func(*testing.B)) {
 	ids := makeSortableIDs(n)
 	return fmt.Sprintf("n=%d", n), func(b *testing.B) {
+		b.ResetTimer()
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			for idx := range ids {
@@ -112,6 +114,7 @@ func benchStringSortable(n int) (string, func(*testing.B)) {
 func benchStringJp(n int) (string, func(*testing.B)) {
 	ids := makeJpTypeIDs(n)
 	return fmt.Sprintf("n=%d", n), func(b *testing.B) {
+		b.ResetTimer()
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			for idx := range ids {

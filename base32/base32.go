@@ -34,13 +34,17 @@ func EncodeLower(src [16]byte) string {
 	return Encode(src, alphLow)
 }
 
-// Encode encodes the src [16]byte into a base32 string with the given alphabet.
-// The alphabet must be 32 bytes long. If the alphabet is shorter, the function
-// will panic. It's the callers responsiblity to ensure the alphabet is valid.
-//
-// Direct usage is discouraged. Use EncodeUpper or EncodeLower instead.
-func Encode(src [16]byte, alphabet string) string {
-	dst := make([]byte, 26)
+// EncodeLowerTo encodes the src [16]byte into a provided 26-byte buffer using uppercase letters.
+func EncodeUpperTo(dst []byte, src [16]byte) {
+	EncodeTo(dst, src, alphUp)
+}
+
+// EncodeLowerTo encodes the src [16]byte into a provided 26-byte buffer using lowercase letters.
+func EncodeLowerTo(dst []byte, src [16]byte) {
+	EncodeTo(dst, src, alphLow)
+}
+
+func EncodeTo(dst []byte, src [16]byte, alphabet string) {
 	// Optimized unrolled loop ahead.
 
 	// 10 byte timestamp
@@ -72,7 +76,16 @@ func Encode(src [16]byte, alphabet string) string {
 	dst[23] = alphabet[(src[14]&124)>>2]
 	dst[24] = alphabet[((src[14]&3)<<3)|((src[15]&224)>>5)]
 	dst[25] = alphabet[src[15]&31]
+}
 
+// Encode encodes the src [16]byte into a base32 string with the given alphabet.
+// The alphabet must be 32 bytes long. If the alphabet is shorter, the function
+// will panic. It's the callers responsiblity to ensure the alphabet is valid.
+//
+// Direct usage is discouraged. Use EncodeUpper or EncodeLower instead.
+func Encode(src [16]byte, alphabet string) string {
+	dst := make([]byte, 26)
+	EncodeTo(dst, src, alphabet)
 	return string(dst)
 }
 

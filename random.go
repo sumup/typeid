@@ -16,6 +16,9 @@ var randomIDProc = &processor{
 	b32Encode: func(u uuid.UUID) string {
 		return base32.EncodeUpper([16]byte(u))
 	},
+	b32EncodeTo: func(dst []byte, u uuid.UUID) {
+		base32.EncodeUpperTo(dst, [16]byte(u))
+	},
 	b32Decode: func(s string) (uuid.UUID, error) {
 		decoded, err := base32.DecodeUpper(s)
 		if err != nil {
