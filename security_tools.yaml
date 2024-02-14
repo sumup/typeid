@@ -1,0 +1,66 @@
+# Tribe and Squad identification
+tribe: TRIBE  # Specify tribe name
+squad: SQUAD  # Specify squad name
+
+security_tools:
+
+  # Secrets Detection
+  secrets_detection: # Github Advanced Security
+    enabled: 1  # 1: enable, 0: disable
+    secrets_scanning: 1  # 1: enable, 0: disable
+    pr_based: # https://github.com/sumup/secrets-detection#pr-check-optional
+      enabled: 1  # 1: enable, 0: disable
+      config_file_path: 'path/to/pr_based/config.yml'  # Path to config file
+  
+  # Static Application Security Testing (SAST)
+  sast:
+    enabled: 1  # 1: enable, 0: disable
+    tools:
+      codeQL: 
+        enabled: 1  # 1: enable, 0: disable
+        config_file_path: 'path/to/codeQL/config.yml'  # Path to config file
+      veracode:
+        enabled: 0  # 1: enable, 0: disable
+        config_file_path: '-'  # Not implemented
+      sonarcloud:
+        enabled: 1  # 1: enable, 0: disable
+        config_file_path: 'path/to/sonarCloud/config.yml'  # Path to config file
+      sobelow:
+        enabled: 1  # 1: enable, 0: disable
+        config_file_path: 'path/to/sobelow/config.yml'  # Path to config file
+      credo: 
+        enabled: 1  # 1: enable, 0: disable
+        config_file_path: 'path/to/credo/config.yml'  # Path to config file
+      klocwork:
+        enabled: 1  # 1: enable, 0: disable
+        config_file_path: 'path/to/klocwork/config.yml'  # Path to config file
+      sfdx-scanner:
+        enabled: 1  # 1: enable, 0: disable
+        config_file_path: 'path/to/sfdx-scanner/config.yml'  # Path to config file
+
+  # SCA (Software Composition Analysis)
+  sca:
+    dependabot: 
+      enabled: 1  # 1: enable, 0: disable
+      config_file_path: 'path/to/dependabot/config.yml'  # Path to config file
+    dependency_review: # https://github.com/sumup/dependency-review
+      enabled: 1  # 1: enable, 0: disable
+      config_file_path: 'path/to/dependency_review/config.yml'  # Path to config file
+
+  # Container Security
+  container_security:
+    trivy:
+      enabled: 1  # 1: enable, 0: disable
+      config_file_path: 'path/to/trivy/config.yml'  # Path to config file
+
+  # IaC (Infrastructure-as-code) security
+  iac_security:
+    tfsec:
+      enabled: 1  # 1: enable, 0: disable
+      config_file_path: 'path/to/tfsec/config.yml'  # Path to config file
+      
+  # Dynamic Application Security Testing (DAST)
+  dast:
+    zap:
+      enabled: 1  # 1: enable, 0: disable
+      config_file_path: 'path/to/zap/config.yml'  # Path to config file
