@@ -6,7 +6,7 @@ toolchain go1.21.5
 
 require (
 	github.com/gofrs/uuid/v5 v5.1.0
-	github.com/jackc/pgx/v5 v5.5.3
+	github.com/jackc/pgx/v5 v5.5.5
 )
 
 require (
