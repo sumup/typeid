@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  GOLANGCI_LINT_VERSION: v1.55
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
+        with:
+          go-version-file: go.mod
+          cache: true
+      - run: make test
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@9bb56186c3b09b4f86b1c65136769dd318469633
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
+        with:
+          go-version-file: go.mod
+          cache: false
+      - run: git config --global url."https://x-access-token:${{ secrets.GH_ACTIONS_PAT }}@github.com/".insteadOf "https://github.com/"
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@3cfe3a4abbb849e10058ce4af15d205b6da42804
+        with:
+          version: ${{ env.GOLANGCI_LINT_VERSION }}
+      - name: tidy
+        run: |
+          make download
+          git diff-index HEAD
+          git diff --minimal --color=always --compact-summary --exit-code HEAD || FAILED=true ;
+          if [[ $FAILED ]];
+            then echo "❗️please run \"go mod tidy\" locally and commit the changes"
+            exit 1
+          fi
