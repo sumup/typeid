@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f
         with:
           persist-credentials: false
-      - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
+      - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7 # v5.0.1
         with:
           go-version-file: go.mod
           cache: true
@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f
         with:
           persist-credentials: false
-      - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
+      - uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7 # v5.0.1
         with:
           go-version-file: go.mod
           cache: false
