@@ -119,7 +119,7 @@ func fromUnprefixString[T instance[P], P Prefix](suffix string) (T, error) {
 
 func FromUUID[T instance[P], P Prefix](u uuid.UUID) (T, error) {
 	if err := validatePrefix(getPrefix[P]()); err != nil {
-		return Nil[T, P](), err
+		return Nil[T](), err
 	}
 	// TODO: Add UUID validation for specific type
 	return T{typedID[P]{u}}, nil
@@ -128,15 +128,15 @@ func FromUUID[T instance[P], P Prefix](u uuid.UUID) (T, error) {
 func FromUUIDStr[T instance[P], P Prefix](uuidStr string) (T, error) {
 	u, err := uuid.FromString(uuidStr)
 	if err != nil {
-		return Nil[T, P](), fmt.Errorf("typeid from uuid string: %w", err)
+		return Nil[T](), fmt.Errorf("typeid from uuid string: %w", err)
 	}
-	return FromUUID[T, P](u)
+	return FromUUID[T](u)
 }
 
 func FromUUIDBytes[T instance[P], P Prefix](bytes []byte) (T, error) {
 	u, err := uuid.FromBytes(bytes)
 	if err != nil {
-		return Nil[T, P](), fmt.Errorf("typeid from uuid: %w", err)
+		return Nil[T](), fmt.Errorf("typeid from uuid: %w", err)
 	}
-	return FromUUID[T, P](u)
+	return FromUUID[T](u)
 }

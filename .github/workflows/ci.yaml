@@ -14,6 +14,9 @@ env:
 jobs:
   test:
     name: Test
+    strategy:
+      matrix:
+        version: ["1.20", "1.21", "1.22"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@1d96c772d19495a3b5c517cd2bc0cb401ea0529f
@@ -21,7 +24,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-go@0c52d547c9bc32b1aa3301fd7a9cb496313a4491
         with:
-          go-version-file: go.mod
+          go-version: ${{ matrix.version }}
           cache: true
       - run: make test
 
