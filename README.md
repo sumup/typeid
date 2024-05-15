@@ -2,7 +2,7 @@
 
 TypeIDs are a draft standard for *type-safe, globally unique identifiers* based on the upcoming [UUIDv7 standard]. Their properties, particularly k-sortability, make them suitable primary identifiers for classic database systems like PostgreSQL. However, k-sortability may not always be desirable. For instance, you might require an identifier with high randomness entropy for security reasons. Additionally, in distributed database systems like CockroachDB, having a k-sortable primary key can lead to hotspots and performance issues.
 
-While this package draws inspiration from the original typeid Go package ([go.jetpack.io/typeid]), it provides multiple ID types:
+While this package draws inspiration from the original typeid Go package ([github.com/jetify-com/typeid-go]), it provides multiple ID types:
 
 - [`typeid.Sortable`] is based on UUIDv7 and is k-sortable. Its implementation adheres to the draft standard. The suffix part is encoded in **lowercase** crockford base32.
 - [`typeid.Random`] is also based on UUIDv4 and is completely random. Unlike `typeid.Sortable`, the suffix part is encoded in **uppercase** crockford base32.
@@ -47,3 +47,8 @@ When using the standard library sql, IDs will be stored as their string represen
 
 [UUIDv7 standard]: https://www.ietf.org/archive/id/draft-peabody-dispatch-new-uuid-format-01.html#name-versions
 [UUIDv4 standard]: https://datatracker.ietf.org/doc/html/rfc4122
+
+---
+
+Based on the go implementation of typeid found at: https://github.com/jetify-com/typeid-go by [Jetify](https://www.jetify.com/).
+Modifications made available under the same license as the original.
