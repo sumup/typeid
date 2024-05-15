@@ -21,6 +21,8 @@ func TestTypeID_Pgx_Scan(t *testing.T) {
 	codec := pgtype.TextCodec{}
 
 	t.Run("pgx binary scan", func(t *testing.T) {
+		t.Parallel()
+
 		t.Run("valid string bytes", func(t *testing.T) {
 			var target UserID
 			err := codec.PlanScan(pgtypeMap, pgtype.TextOID, pgtype.BinaryFormatCode, &target).
@@ -44,6 +46,8 @@ func TestTypeID_Pgx_Scan(t *testing.T) {
 	})
 
 	t.Run("pgx text scan", func(t *testing.T) {
+		t.Parallel()
+
 		var target UserID
 		err := codec.PlanScan(pgtypeMap, pgtype.TextOID, pgtype.TextFormatCode, &target).
 			Scan([]byte(userIDStr), &target)
@@ -55,6 +59,8 @@ func TestTypeID_Pgx_Scan(t *testing.T) {
 		}
 	})
 	t.Run("error on invalid byte count", func(t *testing.T) {
+		t.Parallel()
+
 		var target UserID
 		err := codec.PlanScan(pgtypeMap, pgtype.UUIDOID, pgtype.BinaryFormatCode, &target).
 			Scan([]byte("2345-2222-111-222"), &target)
@@ -64,6 +70,8 @@ func TestTypeID_Pgx_Scan(t *testing.T) {
 	})
 
 	t.Run("error on nil scan", func(t *testing.T) {
+		t.Parallel()
+
 		var target UserID
 		err := codec.PlanScan(pgtypeMap, pgtype.UUIDOID, pgtype.BinaryFormatCode, &target).
 			Scan(nil, &target)
@@ -88,6 +96,8 @@ func TestTypeID_Pgx_Value(t *testing.T) {
 	codec := pgtype.TextCodec{}
 
 	t.Run("binary encoding", func(t *testing.T) {
+		t.Parallel()
+
 		var buf []byte
 		newBuf, err := codec.PlanEncode(pgtypeMap, pgtype.TextOID, pgtype.BinaryFormatCode, original).
 			Encode(original, buf)
@@ -100,6 +110,8 @@ func TestTypeID_Pgx_Value(t *testing.T) {
 	})
 
 	t.Run("text encoding", func(t *testing.T) {
+		t.Parallel()
+
 		var buf []byte
 		newBuf, err := codec.PlanEncode(pgtypeMap, pgtype.TextOID, pgtype.TextFormatCode, original).
 			Encode(original, buf)
