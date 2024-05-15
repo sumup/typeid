@@ -1,8 +1,6 @@
 module github.com/sumup/typeid
 
-go 1.21
-
-toolchain go1.21.5
+go 1.20
 
 require (
 	github.com/gofrs/uuid/v5 v5.1.0
