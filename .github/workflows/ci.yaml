@@ -9,7 +9,7 @@ on:
       - main
 
 env:
-  GOLANGCI_LINT_VERSION: v1.55
+  GOLANGCI_LINT_VERSION: v1.58
 
 jobs:
   test:
