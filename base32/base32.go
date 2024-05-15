@@ -80,7 +80,7 @@ func EncodeTo(dst []byte, src [16]byte, alphabet string) {
 
 // Encode encodes the src [16]byte into a base32 string with the given alphabet.
 // The alphabet must be 32 bytes long. If the alphabet is shorter, the function
-// will panic. It's the callers responsiblity to ensure the alphabet is valid.
+// will panic. It's the callers responsibility to ensure the alphabet is valid.
 //
 // Direct usage is discouraged. Use EncodeUpper or EncodeLower instead.
 func Encode(src [16]byte, alphabet string) string {
@@ -163,7 +163,7 @@ func DecodeLower(s string) ([]byte, error) {
 }
 
 // Decode decodes a given base32 string into a 16-byte slice. The second argument is a index lookup table, that
-// must be 256 bytes long. If the table is shorter, the function will panic. It's the callers responsiblity to
+// must be 256 bytes long. If the table is shorter, the function will panic. It's the callers responsibility to
 // ensure the table is valid.
 //
 // Direct usage is discouraged. Use DecodeUpper or DecodeLower instead.

@@ -16,7 +16,7 @@ type processor struct {
 	b32EncodeTo func([]byte, uuid.UUID)
 	// b32Decode decode a UUID using the resp. base32 decoding.
 	b32Decode func(string) (uuid.UUID, error)
-	// Generates a new universal unique identifer.
+	// Generates a new universal unique identifier.
 	generateUUID func() (uuid.UUID, error)
 }
 

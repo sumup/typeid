@@ -91,6 +91,7 @@ func TestTypeID_ToFrom(t *testing.T) {
 }
 
 func runToFromQuickTests[T idImplementation[P], P Prefix](t *testing.T) {
+	t.Helper()
 	t.Parallel()
 
 	t.Run("from string", func(t *testing.T) {
@@ -123,6 +124,7 @@ func runToFromQuickTests[T idImplementation[P], P Prefix](t *testing.T) {
 }
 
 func fromStringTester[T idImplementation[P], P Prefix](t *testing.T) func(wid wrappedID[T, P]) bool {
+	t.Helper()
 	return func(wid wrappedID[T, P]) bool {
 		parsedID, err := FromString[T](wid.ID().String())
 		if err != nil {
@@ -133,6 +135,7 @@ func fromStringTester[T idImplementation[P], P Prefix](t *testing.T) func(wid wr
 }
 
 func fromUUIDTester[T idImplementation[P], P Prefix](t *testing.T) func(wid wrappedID[T, P]) bool {
+	t.Helper()
 	return func(wid wrappedID[T, P]) bool {
 		parsedID, err := FromUUID[T](wid.ID().UUID())
 		if err != nil {
@@ -143,6 +146,7 @@ func fromUUIDTester[T idImplementation[P], P Prefix](t *testing.T) func(wid wrap
 }
 
 func fromUUIDStringTester[T idImplementation[P], P Prefix](t *testing.T) func(wid wrappedID[T, P]) bool {
+	t.Helper()
 	return func(wid wrappedID[T, P]) bool {
 		parsedID, err := FromUUIDStr[T](wid.ID().UUID().String())
 		if err != nil {
@@ -153,6 +157,7 @@ func fromUUIDStringTester[T idImplementation[P], P Prefix](t *testing.T) func(wi
 }
 
 func fromUUIDBytesTester[T idImplementation[P], P Prefix](t *testing.T) func(wid wrappedID[T, P]) bool {
+	t.Helper()
 	return func(wid wrappedID[T, P]) bool {
 		parsedID, err := FromUUIDBytes[T](wid.id.UUID().Bytes())
 		if err != nil {
@@ -172,7 +177,7 @@ func (w wrappedID[T, P]) ID() T {
 	return w.id
 }
 
-func (w wrappedID[T, P]) Generate(rand *rand.Rand, _ int) reflect.Value {
+func (w wrappedID[T, P]) Generate(rnd *rand.Rand, _ int) reflect.Value {
 	// gen the processor to determine the UUID version to use
 	procGenUUID, err := (T{}).processor().generateUUID()
 	if err != nil {
@@ -180,18 +185,19 @@ func (w wrappedID[T, P]) Generate(rand *rand.Rand, _ int) reflect.Value {
 	}
 	version := procGenUUID.Version()
 
-	uuidGen := uuid.NewGenWithOptions(uuid.WithRandomReader(rand))
+	uuidGen := uuid.NewGenWithOptions(uuid.WithRandomReader(rnd))
 	var uid uuid.UUID
 
-	if version == uuid.V4 {
+	switch version {
+	case uuid.V4:
 		if uid, err = uuidGen.NewV4(); err != nil {
 			panic("failed to generate uuid v4")
 		}
-	} else if version == uuid.V7 {
+	case uuid.V7:
 		if uid, err = uuidGen.NewV7(); err != nil {
 			panic("failed to generate uuid v7")
 		}
-	} else {
+	default:
 		panic("unknown uuid version")
 	}
 
