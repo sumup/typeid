@@ -1,6 +1,6 @@
 # Security Policy
 
-The security of `sumup-go` is of paramount importance to us, and we genuinely appreciate the community's efforts to identify and report vulnerabilities.
+The security of `typeid` is of paramount importance to us, and we genuinely appreciate the community's efforts to identify and report vulnerabilities.
 
 ## Supported Versions
 
