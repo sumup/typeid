@@ -40,7 +40,6 @@ jobs:
         with:
           go-version-file: go.mod
           cache: false
-      - run: git config --global url."https://x-access-token:${{ secrets.GH_ACTIONS_PAT }}@github.com/".insteadOf "https://github.com/"
       - name: golangci-lint
         uses: golangci/golangci-lint-action@a4f60bb28d35aeee14e6880718e0c85ff1882e64
         with:
