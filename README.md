@@ -1,6 +1,6 @@
 # TypeID
 
-TypeIDs are a draft standard for *type-safe, globally unique identifiers* based on the upcoming [UUIDv7 standard](https://www.ietf.org/archive/id/draft-peabody-dispatch-new-uuid-format-01.html#name-versions). Their properties, particularly k-sortability, make them suitable primary identifiers for classic database systems like PostgreSQL. However, k-sortability may not always be desirable. For instance, you might require an identifier with high randomness entropy for security reasons. Additionally, in distributed database systems like CockroachDB, having a k-sortable primary key can lead to hotspots and performance issues.
+TypeIDs are a draft standard for *type-safe, globally unique identifiers* based on the [UUIDv7 standard](https://datatracker.ietf.org/doc/html/rfc9562). Their properties, particularly k-sortability, make them suitable primary identifiers for classic database systems like PostgreSQL. However, k-sortability may not always be desirable. For instance, you might require an identifier with high randomness entropy for security reasons. Additionally, in distributed database systems like CockroachDB, having a k-sortable primary key can lead to hotspots and performance issues.
 
 While this package draws inspiration from the original typeid Go package ([github.com/jetify-com/typeid-go](https://github.com/jetify-com/typeid-go)), it provides multiple ID types:
 
@@ -56,5 +56,5 @@ When using the standard library sql, IDs will be stored as their string represen
 Based on the go implementation of typeid found at: https://github.com/jetify-com/typeid-go by [Jetify](https://www.jetify.com/).
 Modifications made available under the same license as the original.
 
-[^UUIDv7]: https://www.ietf.org/archive/id/draft-peabody-dispatch-new-uuid-format-01.html#name-versions
+[^UUIDv7]: https://datatracker.ietf.org/doc/html/rfc9562
 [^UUIDv4]: https://datatracker.ietf.org/doc/html/rfc4122
