@@ -48,6 +48,11 @@ When using the standard library sql, IDs will be stored as their string represen
 [UUIDv7 standard]: https://www.ietf.org/archive/id/draft-peabody-dispatch-new-uuid-format-01.html#name-versions
 [UUIDv4 standard]: https://datatracker.ietf.org/doc/html/rfc4122
 
+### Maintainers
+
+- [Johannes Gräger](mailto:johannes.graeger@sumup.com)
+- [Matouš Dzivjak](mailto:matous.dzivjak@sumup.com)
+
 ---
 
 Based on the go implementation of typeid found at: https://github.com/jetify-com/typeid-go by [Jetify](https://www.jetify.com/).
