@@ -14,4 +14,5 @@ require (
 require (
 	github.com/gofrs/uuid/v5 v5.2.0 // indirect
 	github.com/jackc/pgx/v5 v5.5.5 // indirect
+	go.jetify.com/typeid v1.1.0 // indirect
 )
