@@ -1,0 +1,158 @@
+run:
+  timeout: 5m
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - bodyclose
+        - dupl
+        - errcheck
+        - errorlint
+        - funlen
+        - goconst
+        - gocyclo
+        - goerr113
+        - gosec
+        - lll
+        - noctx
+        - prealloc
+        - unparam
+
+output:
+  uniq-by-line: true
+  sort-results: true
+
+linters:
+  disable-all: true
+  enable:
+    - asciicheck
+    - depguard
+    - durationcheck
+    - errcheck
+    - errorlint
+    - exhaustive
+    - exportloopref
+    - gocritic
+    - gofmt
+    - goimports
+    - gomoddirectives
+    - goprintffuncname
+    - gosec
+    - gosimple
+    - govet
+    - ineffassign
+    - makezero
+    - megacheck
+    - misspell
+    - nakedret
+    - nakedret
+    - nilerr
+    - noctx
+    - nolintlint
+    - prealloc
+    - revive
+    - staticcheck
+    - stylecheck
+    - testifylint
+    - thelper
+    - tparallel
+    - typecheck
+    - unconvert
+    - unparam
+    - usestdlibvars
+    - unused
+    - wastedassign
+    - whitespace
+
+linters-settings:
+  depguard:
+    rules:
+      main:
+        deny:
+          - pkg: github.com/pkg/errors
+            desc: Use "errors" from std lib instead.
+          - pkg: golang.org/x/exp/slices
+            desc: Use "slices" from std lib instead.
+          - pkg: golang.org/x/exp/maps
+            desc: Use "maps" from std lib instead.
+  errorlint:
+    errorf: true
+    asserts: false
+    comparison: true
+  errcheck:
+    check-type-assertions: true
+    check-blank: false
+  exhaustive:
+    default-signifies-exhaustive: true
+  gci:
+    sections:
+      - standard
+      - default
+      - prefix(github.com/sumup/x)
+      - dot
+    skip-generated: false
+  gocritic:
+    disabled-checks:
+      - sloppyReassign
+      - whyNoLint
+    enabled-tags:
+      - diagnostic
+      - style
+      - performance
+    settings:
+      hugeParam:
+        sizeThreshold: 512
+  gofmt:
+    simplify: true
+  goimports:
+    local-prefixes: github.com/sumup/x
+  gomoddirectives:
+    replace-local: true
+  gosimple:
+    checks: ["all"]
+  govet:
+    enable-all: true
+    disable:
+      - fieldalignment
+  nakedret:
+    max-func-lines: 10
+  misspell:
+    locale: US
+  prealloc:
+    simple: true
+    range-loops: true
+    for-loops: false
+  revive:
+    rules:
+      - name: blank-imports
+        disabled: true
+  nolintlint:
+    allow-unused: false
+    require-explanation: true
+    require-specific: true
+  staticcheck:
+    checks: ['all']
+  stylecheck:
+    checks: ['all']
+  unparam:
+    check-exported: false
+  unused: {}
+  whitespace:
+    multi-if: false
+    multi-func: false
+  testifylint:
+    enable:
+      - bool-compare
+      - compares
+      - empty
+      - error-is-as
+      - error-nil
+      - expected-actual
+      - float-compare
+      - len
+      - suite-dont-use-pkg
+      - suite-extra-assert-call
+      - suite-thelper
