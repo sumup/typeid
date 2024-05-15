@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/sumup/typeid"
-	jpTypeId "go.jetpack.io/typeid"
+	jpTypeId "go.jetify.com/typeid"
 )
 
 func BenchmarkNew(b *testing.B) {
@@ -26,7 +26,7 @@ func BenchmarkNew(b *testing.B) {
 		})
 	})
 
-	b.Run("jetpack-io/typeid", func(b *testing.B) {
+	b.Run("go.jetify.com/typeid", func(b *testing.B) {
 		b.ReportAllocs()
 		for i := 0; i < b.N; i++ {
 			//nolint:errcheck // Benchmark.
@@ -51,7 +51,7 @@ func BenchmarkString(b *testing.B) {
 		})
 	})
 
-	b.Run("jetpack-io/typeid", func(b *testing.B) {
+	b.Run("go.jetify.com/typeid", func(b *testing.B) {
 		b.Run(benchStringJp(1))
 		b.Run(benchStringJp(8))
 		b.Run(benchStringJp(64))
@@ -75,7 +75,7 @@ func BenchmarkFromString(b *testing.B) {
 		})
 	})
 
-	b.Run("jetpack-io/typeid", func(b *testing.B) {
+	b.Run("go.jetify.com/typeid", func(b *testing.B) {
 		b.Run(benchFromStringJetpack(1))
 		b.Run(benchFromStringJetpack(8))
 		b.Run(benchFromStringJetpack(64))
@@ -223,7 +223,7 @@ func BenchmarkEncodeDecode(b *testing.B) {
 		})
 	})
 
-	b.Run("jetpack-io/typeid", func(b *testing.B) {
+	b.Run("go.jetify.com/typeid", func(b *testing.B) {
 		for i := 0; i < b.N; i++ {
 			tid := jpTypeId.Must(jpTypeId.New[JetpackID]())
 			_ = jpTypeId.Must(jpTypeId.Parse[JetpackID](tid.String()))
