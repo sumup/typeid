@@ -3,7 +3,7 @@ module github.com/sumup/typeid
 go 1.20
 
 require (
-	github.com/gofrs/uuid/v5 v5.2.0
+	github.com/gofrs/uuid/v5 v5.3.0
 	github.com/jackc/pgx/v5 v5.6.0
 )
 
