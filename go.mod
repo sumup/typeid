@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/gofrs/uuid/v5 v5.3.0
-	github.com/jackc/pgx/v5 v5.6.0
+	github.com/jackc/pgx/v5 v5.7.0
 )
 
 require (
