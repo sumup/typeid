@@ -41,7 +41,7 @@ jobs:
           go-version-file: go.mod
           cache: false
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@971e284b6050e8a5849b72094c50ab08da042db8
+        uses: golangci/golangci-lint-action@ec5d18412c0aeab7936cb16880d708ba2a64e1ae
         with:
           version: ${{ env.GOLANGCI_LINT_VERSION }}
       - name: tidy
