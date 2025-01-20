@@ -91,7 +91,7 @@ linters-settings:
     sections:
       - standard
       - default
-      - prefix(github.com/sumup/x)
+      - prefix(github.com/sumup/typeid)
       - dot
     skip-generated: false
   gocritic:
@@ -108,7 +108,7 @@ linters-settings:
   gofmt:
     simplify: true
   goimports:
-    local-prefixes: github.com/sumup/x
+    local-prefixes: github.com/sumup/typeid
   gomoddirectives:
     replace-local: true
   gosimple:
