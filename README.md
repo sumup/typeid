@@ -2,6 +2,12 @@
 
 # TypeID
 
+[![Stars](https://img.shields.io/github/stars/sumup/typeid?style=social)](https://github.com/sumup/typeid/)
+[![Go Reference](https://pkg.go.dev/badge/github.com/sumup/typeid.svg)](https://pkg.go.dev/github.com/sumup/typeid)
+[![CI Status](https://github.com/sumup/typeid/workflows/CI/badge.svg)](https://github.com/sumup/typeid/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/sumup/typeid)](./LICENSE)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.1%20adopted-ff69b4.svg)](https://github.com/sumup/typeid/tree/main/CODE_OF_CONDUCT.md)
+
 </div>
 
 TypeIDs are a draft standard for *type-safe, globally unique identifiers* based on the [UUIDv7 standard](https://datatracker.ietf.org/doc/html/rfc9562). Their properties, particularly k-sortability, make them suitable primary identifiers for classic database systems like PostgreSQL. However, k-sortability may not always be desirable. For instance, you might require an identifier with high randomness entropy for security reasons. Additionally, in distributed database systems like CockroachDB, having a k-sortable primary key can lead to hotspots and performance issues.
