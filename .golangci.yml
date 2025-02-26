@@ -4,6 +4,7 @@ run:
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0
+  uniq-by-line: true
   exclude-rules:
     - path: _test\.go
       linters:
@@ -22,7 +23,6 @@ issues:
         - unparam
 
 output:
-  uniq-by-line: true
   sort-results: true
 
 linters:
