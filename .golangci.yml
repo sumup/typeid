@@ -34,7 +34,6 @@ linters:
     - errcheck
     - errorlint
     - exhaustive
-    - exportloopref
     - gocritic
     - gofmt
     - goimports
