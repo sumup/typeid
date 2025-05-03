@@ -1,52 +1,40 @@
-run:
-  timeout: 5m
-
+version: "2"
 issues:
   max-issues-per-linter: 0
   max-same-issues: 0
   uniq-by-line: true
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - bodyclose
-        - dupl
-        - errcheck
-        - errorlint
-        - funlen
-        - goconst
-        - gocyclo
-        - goerr113
-        - gosec
-        - lll
-        - noctx
-        - prealloc
-        - unparam
-
-output:
-  sort-results: true
-
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/sumup/typeid)
+        - dot
+    gofmt:
+      simplify: true
+    goimports:
+      local-prefixes:
+        - github.com/sumup/typeid
 linters:
-  disable-all: true
+  default: none
   enable:
     - asciicheck
-    - depguard
     - durationcheck
     - errcheck
     - errorlint
     - exhaustive
     - gocritic
-    - gofmt
-    - goimports
     - gomoddirectives
     - goprintffuncname
     - gosec
-    - gosimple
     - govet
     - ineffassign
     - makezero
-    - megacheck
     - misspell
-    - nakedret
     - nakedret
     - nilerr
     - noctx
@@ -54,104 +42,99 @@ linters:
     - prealloc
     - revive
     - staticcheck
-    - stylecheck
     - testifylint
     - thelper
     - tparallel
-    - typecheck
     - unconvert
     - unparam
-    - usestdlibvars
     - unused
+    - usestdlibvars
     - wastedassign
     - whitespace
-
-linters-settings:
-  depguard:
+  settings:
+    errcheck:
+      check-type-assertions: true
+      check-blank: false
+    errorlint:
+      errorf: true
+      asserts: false
+      comparison: true
+    exhaustive:
+      default-signifies-exhaustive: true
+    gocritic:
+      disabled-checks:
+        - sloppyReassign
+        - whyNoLint
+      enabled-tags:
+        - diagnostic
+        - style
+        - performance
+      settings:
+        hugeParam:
+          sizeThreshold: 512
+    gomoddirectives:
+      replace-local: true
+    govet:
+      disable:
+        - fieldalignment
+      enable-all: true
+    misspell:
+      locale: US
+    nakedret:
+      max-func-lines: 10
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+      allow-unused: false
+    prealloc:
+      simple: true
+      range-loops: true
+      for-loops: false
+    revive:
+      rules:
+        - name: blank-imports
+          disabled: true
+    staticcheck:
+      checks:
+        - all
+    testifylint:
+      enable:
+        - bool-compare
+        - compares
+        - empty
+        - error-is-as
+        - error-nil
+        - expected-actual
+        - float-compare
+        - len
+        - suite-dont-use-pkg
+        - suite-extra-assert-call
+        - suite-thelper
+    unparam:
+      check-exported: false
+    whitespace:
+      multi-if: false
+      multi-func: false
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
     rules:
-      main:
-        deny:
-          - pkg: github.com/pkg/errors
-            desc: Use "errors" from std lib instead.
-          - pkg: golang.org/x/exp/slices
-            desc: Use "slices" from std lib instead.
-          - pkg: golang.org/x/exp/maps
-            desc: Use "maps" from std lib instead.
-  errorlint:
-    errorf: true
-    asserts: false
-    comparison: true
-  errcheck:
-    check-type-assertions: true
-    check-blank: false
-  exhaustive:
-    default-signifies-exhaustive: true
-  gci:
-    sections:
-      - standard
-      - default
-      - prefix(github.com/sumup/typeid)
-      - dot
-    skip-generated: false
-  gocritic:
-    disabled-checks:
-      - sloppyReassign
-      - whyNoLint
-    enabled-tags:
-      - diagnostic
-      - style
-      - performance
-    settings:
-      hugeParam:
-        sizeThreshold: 512
-  gofmt:
-    simplify: true
-  goimports:
-    local-prefixes: github.com/sumup/typeid
-  gomoddirectives:
-    replace-local: true
-  gosimple:
-    checks: ["all"]
-  govet:
-    enable-all: true
-    disable:
-      - fieldalignment
-  nakedret:
-    max-func-lines: 10
-  misspell:
-    locale: US
-  prealloc:
-    simple: true
-    range-loops: true
-    for-loops: false
-  revive:
-    rules:
-      - name: blank-imports
-        disabled: true
-  nolintlint:
-    allow-unused: false
-    require-explanation: true
-    require-specific: true
-  staticcheck:
-    checks: ['all']
-  stylecheck:
-    checks: ['all']
-  unparam:
-    check-exported: false
-  unused: {}
-  whitespace:
-    multi-if: false
-    multi-func: false
-  testifylint:
-    enable:
-      - bool-compare
-      - compares
-      - empty
-      - error-is-as
-      - error-nil
-      - expected-actual
-      - float-compare
-      - len
-      - suite-dont-use-pkg
-      - suite-extra-assert-call
-      - suite-thelper
+      - linters:
+          - bodyclose
+          - dupl
+          - err113
+          - errcheck
+          - errorlint
+          - funlen
+          - goconst
+          - gocyclo
+          - gosec
+          - lll
+          - noctx
+          - prealloc
+          - unparam
+        path: _test\.go
