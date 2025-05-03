@@ -205,7 +205,7 @@ func TestTypeID_SQL_Value(t *testing.T) {
 }
 
 func TestJSON(t *testing.T) {
-	str := "account_00041061050r3gg28a1c60t3gf"
+	str := "system_account_00041061050r3gg28a1c60t3gf"
 	tid := Must(FromString[AccountID](str))
 
 	encoded, err := json.Marshal(tid)

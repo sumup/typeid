@@ -1,7 +1,6 @@
 package typeid
 
 import (
-	"errors"
 	"fmt"
 	"strings"
 
@@ -81,35 +80,12 @@ func MustNew[T instance[P], P Prefix]() T {
 }
 
 func FromString[T instance[P], P Prefix](s string) (T, error) {
-	prefix, suffix, ok := strings.Cut(s, "_")
-	if !ok {
-		// If there is no prefix, the first string part is the suffix.
-		return fromUnprefixString[T](prefix)
+	prefix := getPrefix[P]() + "_"
+	if !strings.HasPrefix(s, prefix) {
+		return Nil[T](), fmt.Errorf("invalid prefix for typeid %T, expected %s", T{}, getPrefix[P]())
 	}
 
-	return fromPrefixedString[T](prefix, suffix)
-}
-
-func fromPrefixedString[T instance[P], P Prefix](prefix, suffix string) (T, error) {
-	if prefix == "" {
-		return Nil[T](), errors.New("typeid prefix cannot be empty when there's a separator")
-	} else if prefix != getPrefix[P]() {
-		return Nil[T](), fmt.Errorf("invalid prefix `%s` for typeid %T. Expected %s", prefix, T{}, getPrefix[P]())
-	}
-
-	tid, err := from[P](suffix, T{}.processor())
-	if err != nil {
-		return Nil[T](), fmt.Errorf("parse typeid suffix `%s`: %w", suffix, err)
-	}
-	return T{tid}, nil
-}
-
-func fromUnprefixString[T instance[P], P Prefix](suffix string) (T, error) {
-	// Unprefixed ID strings are only valid, if the type ids prefix is the empty string
-	if getPrefix[P]() != "" {
-		return Nil[T](), fmt.Errorf("no prefix in id string %s for type %T. Expected %s", suffix, T{}, getPrefix[P]())
-	}
-
+	suffix := strings.TrimPrefix(s, prefix)
 	tid, err := from[P](suffix, T{}.processor())
 	if err != nil {
 		return Nil[T](), fmt.Errorf("parse typeid suffix `%s`: %w", suffix, err)
