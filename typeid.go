@@ -80,15 +80,16 @@ func MustNew[T instance[P], P Prefix]() T {
 }
 
 func FromString[T instance[P], P Prefix](s string) (T, error) {
-	prefix := getPrefix[P]() + "_"
-	if !strings.HasPrefix(s, prefix) {
-		return Nil[T](), fmt.Errorf("invalid prefix for typeid %T, expected %s", T{}, getPrefix[P]())
+	prefix := getPrefix[P]()
+	if prefix != "" && !strings.HasPrefix(s, prefix+"_") {
+		return Nil[T](), fmt.Errorf("invalid prefix for typeid %T, expected %q", T{}, prefix)
 	}
 
-	suffix := strings.TrimPrefix(s, prefix)
+	suffix := strings.TrimPrefix(s, prefix+"_")
+
 	tid, err := from[P](suffix, T{}.processor())
 	if err != nil {
-		return Nil[T](), fmt.Errorf("parse typeid suffix `%s`: %w", suffix, err)
+		return Nil[T](), fmt.Errorf("parse typeid suffix %q: %w", suffix, err)
 	}
 	return T{tid}, nil
 }

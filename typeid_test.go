@@ -88,6 +88,9 @@ func TestTypeID_ToFrom(t *testing.T) {
 
 	type SortableID = AccountID
 	t.Run("typeid.Sortable", runToFromQuickTests[SortableID])
+
+	type EmptyPrefixID = NilID
+	t.Run("empty prefix", runToFromQuickTests[EmptyPrefixID])
 }
 
 func runToFromQuickTests[T idImplementation[P], P Prefix](t *testing.T) {

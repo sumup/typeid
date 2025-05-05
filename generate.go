@@ -2,7 +2,6 @@ package typeid
 
 import (
 	"fmt"
-	"regexp"
 	"unsafe"
 
 	"github.com/gofrs/uuid/v5"
@@ -58,10 +57,6 @@ func nilID[P Prefix]() typedID[P] {
 	}
 }
 
-var (
-	prefixRegexp = regexp.MustCompile("^[a-z](?:[a-z_]*[a-z])?$")
-)
-
 func validatePrefix(prefix string) error {
 	if prefix == "" {
 		return nil
@@ -71,9 +66,11 @@ func validatePrefix(prefix string) error {
 		return fmt.Errorf("invalid prefix: %s, prefix length is %d, expected <= %d", prefix, len(prefix), MaxPrefixLen)
 	}
 
-	// Ensure that the prefix has only lowercase ASCII characters
-	if !prefixRegexp.MatchString(prefix) {
-		return fmt.Errorf("invalid prefix: '%s', prefix must match %q", prefix, prefixRegexp.String())
+	// Ensure that the prefix has only lowercase ASCII characters and underscores
+	for _, c := range prefix {
+		if c != '_' && (c < 'a' || c > 'z') {
+			return fmt.Errorf("invalid prefix: '%s', prefix should match [a-z_]{0,%d}", prefix, MaxPrefixLen)
+		}
 	}
 
 	return nil
