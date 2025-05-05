@@ -1,7 +1,6 @@
 package typeid
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/gofrs/uuid/v5"
@@ -48,10 +47,6 @@ func scan[T idImplementation[P], P Prefix](dst *T, src any) error {
 	return nil
 }
 
-var (
-	errNilScan = errors.New("cannot scan NULL into *typeid.TypeID")
-)
-
 func textValue[T idImplementation[P], P Prefix](id T) (pgtype.Text, error) {
 	return pgtype.Text{
 		String: id.String(),
@@ -63,7 +58,7 @@ func scanText[T idImplementation[P], P Prefix](dst *T, v pgtype.Text) error {
 	var err error
 
 	if !v.Valid {
-		return errNilScan
+		return fmt.Errorf("cannot scan NULL into %T", dst)
 	}
 
 	*dst, err = FromString[T](v.String)
@@ -85,7 +80,7 @@ func scanUUID[T idImplementation[P], P Prefix](dst *T, v pgtype.UUID) error {
 	var err error
 
 	if !v.Valid {
-		return errNilScan
+		return fmt.Errorf("cannot scan NULL into %T", dst)
 	}
 
 	*dst, err = FromUUIDBytes[T](v.Bytes[:])

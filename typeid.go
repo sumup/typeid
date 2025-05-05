@@ -1,10 +1,15 @@
 package typeid
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
 	"github.com/gofrs/uuid/v5"
+)
+
+var (
+	ErrParse = errors.New("parse typeid")
 )
 
 const (
@@ -82,14 +87,14 @@ func MustNew[T instance[P], P Prefix]() T {
 func FromString[T instance[P], P Prefix](s string) (T, error) {
 	prefix := getPrefix[P]()
 	if prefix != "" && !strings.HasPrefix(s, prefix+"_") {
-		return Nil[T](), fmt.Errorf("invalid prefix for typeid %T, expected %q", T{}, prefix)
+		return Nil[T](), fmt.Errorf("%w: invalid prefix for %T, expected %q", ErrParse, T{}, prefix)
 	}
 
 	suffix := strings.TrimPrefix(s, prefix+"_")
 
 	tid, err := from[P](suffix, T{}.processor())
 	if err != nil {
-		return Nil[T](), fmt.Errorf("parse typeid suffix %q: %w", suffix, err)
+		return Nil[T](), fmt.Errorf("%w: invalid suffix %q: %s", ErrParse, suffix, err.Error())
 	}
 	return T{tid}, nil
 }
@@ -105,7 +110,7 @@ func FromUUID[T instance[P], P Prefix](u uuid.UUID) (T, error) {
 func FromUUIDStr[T instance[P], P Prefix](uuidStr string) (T, error) {
 	u, err := uuid.FromString(uuidStr)
 	if err != nil {
-		return Nil[T](), fmt.Errorf("typeid from uuid string: %w", err)
+		return Nil[T](), fmt.Errorf("%w: uuid from string: %s", ErrParse, err.Error())
 	}
 	return FromUUID[T](u)
 }
@@ -113,7 +118,7 @@ func FromUUIDStr[T instance[P], P Prefix](uuidStr string) (T, error) {
 func FromUUIDBytes[T instance[P], P Prefix](bytes []byte) (T, error) {
 	u, err := uuid.FromBytes(bytes)
 	if err != nil {
-		return Nil[T](), fmt.Errorf("typeid from uuid: %w", err)
+		return Nil[T](), fmt.Errorf("%w: uuid from bytes: %s", ErrParse, err.Error())
 	}
 	return FromUUID[T](u)
 }
