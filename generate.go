@@ -63,15 +63,16 @@ func validatePrefix(prefix string) error {
 	}
 
 	if len(prefix) > MaxPrefixLen {
-		return fmt.Errorf("invalid prefix: %s. Prefix length is %d, expected <= %d", prefix, len(prefix), MaxPrefixLen)
+		return fmt.Errorf("invalid prefix: %s, prefix length is %d, expected <= %d", prefix, len(prefix), MaxPrefixLen)
 	}
 
-	// Ensure that the prefix has only lowercase ASCII characters
+	// Ensure that the prefix has only lowercase ASCII characters and underscores
 	for _, c := range prefix {
-		if c < 'a' || c > 'z' {
-			return fmt.Errorf("invalid prefix: '%s'. Prefix should match [a-z]{0,%d}", prefix, MaxPrefixLen)
+		if c != '_' && (c < 'a' || c > 'z') {
+			return fmt.Errorf("invalid prefix: '%s', prefix should match [a-z_]{0,%d}", prefix, MaxPrefixLen)
 		}
 	}
+
 	return nil
 }
 

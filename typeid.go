@@ -8,6 +8,10 @@ import (
 	"github.com/gofrs/uuid/v5"
 )
 
+var (
+	ErrParse = errors.New("parse typeid")
+)
+
 const (
 	// MaxPrefixLen is the maximum string length of a [Prefix]. Any generation or parsing of an ID type with a longer prefix will fail.
 	MaxPrefixLen = 63
@@ -81,38 +85,16 @@ func MustNew[T instance[P], P Prefix]() T {
 }
 
 func FromString[T instance[P], P Prefix](s string) (T, error) {
-	prefix, suffix, ok := strings.Cut(s, "_")
-	if !ok {
-		// If there is no prefix, the first string part is the suffix.
-		return fromUnprefixString[T](prefix)
+	prefix := getPrefix[P]()
+	if prefix != "" && !strings.HasPrefix(s, prefix+"_") {
+		return Nil[T](), fmt.Errorf("%w: invalid prefix for %T, expected %q", ErrParse, T{}, prefix)
 	}
 
-	return fromPrefixedString[T](prefix, suffix)
-}
-
-func fromPrefixedString[T instance[P], P Prefix](prefix, suffix string) (T, error) {
-	if prefix == "" {
-		return Nil[T](), errors.New("typeid prefix cannot be empty when there's a separator")
-	} else if prefix != getPrefix[P]() {
-		return Nil[T](), fmt.Errorf("invalid prefix `%s` for typeid %T. Expected %s", prefix, T{}, getPrefix[P]())
-	}
+	suffix := strings.TrimPrefix(s, prefix+"_")
 
 	tid, err := from[P](suffix, T{}.processor())
 	if err != nil {
-		return Nil[T](), fmt.Errorf("parse typeid suffix `%s`: %w", suffix, err)
-	}
-	return T{tid}, nil
-}
-
-func fromUnprefixString[T instance[P], P Prefix](suffix string) (T, error) {
-	// Unprefixed ID strings are only valid, if the type ids prefix is the empty string
-	if getPrefix[P]() != "" {
-		return Nil[T](), fmt.Errorf("no prefix in id string %s for type %T. Expected %s", suffix, T{}, getPrefix[P]())
-	}
-
-	tid, err := from[P](suffix, T{}.processor())
-	if err != nil {
-		return Nil[T](), fmt.Errorf("parse typeid suffix `%s`: %w", suffix, err)
+		return Nil[T](), fmt.Errorf("%w: invalid suffix %q: %s", ErrParse, suffix, err.Error())
 	}
 	return T{tid}, nil
 }
@@ -128,7 +110,7 @@ func FromUUID[T instance[P], P Prefix](u uuid.UUID) (T, error) {
 func FromUUIDStr[T instance[P], P Prefix](uuidStr string) (T, error) {
 	u, err := uuid.FromString(uuidStr)
 	if err != nil {
-		return Nil[T](), fmt.Errorf("typeid from uuid string: %w", err)
+		return Nil[T](), fmt.Errorf("%w: uuid from string: %s", ErrParse, err.Error())
 	}
 	return FromUUID[T](u)
 }
@@ -136,7 +118,7 @@ func FromUUIDStr[T instance[P], P Prefix](uuidStr string) (T, error) {
 func FromUUIDBytes[T instance[P], P Prefix](bytes []byte) (T, error) {
 	u, err := uuid.FromBytes(bytes)
 	if err != nil {
-		return Nil[T](), fmt.Errorf("typeid from uuid: %w", err)
+		return Nil[T](), fmt.Errorf("%w: uuid from bytes: %s", ErrParse, err.Error())
 	}
 	return FromUUID[T](u)
 }

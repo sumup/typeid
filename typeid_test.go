@@ -11,7 +11,7 @@ import (
 
 const (
 	userIDPrefix    = "user"
-	accountIDPrefix = "account"
+	accountIDPrefix = "system_account"
 
 	emptyID = "00000000000000000000000000" // empty is suffix is 26 zeros
 )
@@ -70,7 +70,7 @@ func TestTypeID_Nil(t *testing.T) {
 	}
 
 	nilAccountID := Nil[AccountID]()
-	if "account_"+emptyID != nilAccountID.String() {
+	if "system_account_"+emptyID != nilAccountID.String() {
 		t.Errorf("expected nil account id, got: %s", nilAccountID.String())
 	}
 
@@ -88,6 +88,9 @@ func TestTypeID_ToFrom(t *testing.T) {
 
 	type SortableID = AccountID
 	t.Run("typeid.Sortable", runToFromQuickTests[SortableID])
+
+	type EmptyPrefixID = NilID
+	t.Run("empty prefix", runToFromQuickTests[EmptyPrefixID])
 }
 
 func runToFromQuickTests[T idImplementation[P], P Prefix](t *testing.T) {

@@ -78,8 +78,9 @@ func TestTypeID_Pgx_Scan(t *testing.T) {
 		if err == nil {
 			t.Error("must error on a nil scan")
 		}
-		if !strings.Contains(err.Error(), "cannot scan NULL into *typeid.TypeID") {
-			t.Error("error must be cannot scan NULL into *typeid.TypeID")
+		expect := "cannot scan NULL into *typeid.Random[github.com/sumup/typeid.userPrefix]"
+		if !strings.Contains(err.Error(), expect) {
+			t.Errorf("error must be %q, was %q", expect, err.Error())
 		}
 	})
 }
@@ -205,7 +206,7 @@ func TestTypeID_SQL_Value(t *testing.T) {
 }
 
 func TestJSON(t *testing.T) {
-	str := "account_00041061050r3gg28a1c60t3gf"
+	str := "system_account_00041061050r3gg28a1c60t3gf"
 	tid := Must(FromString[AccountID](str))
 
 	encoded, err := json.Marshal(tid)
