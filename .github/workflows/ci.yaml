@@ -9,7 +9,7 @@ on:
       - main
 
 env:
-  GOLANGCI_LINT_VERSION: v2.0.2
+  GOLANGCI_LINT_VERSION: v2.5.0
 
 permissions:
   contents: read
@@ -19,7 +19,7 @@ jobs:
     name: Test
     strategy:
       matrix:
-        version: ["1.22", "1.23", "1.24"]
+        version: ["1.23", "1.24", "1.25"]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
