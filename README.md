@@ -56,6 +56,31 @@ ID types in this package can be used with [database/sql](https://pkg.go.dev/data
 
 When using the standard library SQL, IDs will be stored as their string representation and can be scanned and valued accordingly. When using pgx, both TEXT and UUID columns can be used directly. However, note that the type information is lost when using UUID columns, unless you take additional steps at the database layer. Be mindful of your identifier semantics, especially in complex JOIN queries.
 
+If using `pgx` with PostgreSQL, you can generate UUIDv4 (for usage with `typeid.Random`) as the default value for your primary key:
+
+```sql
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT GEN_RANDOM_UUID(),
+    ...
+);
+```
+
+For k-sortable TypeIDs (`typeid.Sortable`, using UUIDv7) you will have to generate the UUID in your application unless you are running [PostgreSQL 18](https://www.thenile.dev/blog/uuidv7) or new where both are supported:
+
+```sql
+-- With random TypeID
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT uuidv4(),
+    ...
+);
+
+-- With sortable TypeID
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT uuidv7(),
+    ...
+);
+```
+
 ## Using with sqlc
 
 TypeIDs work seamlessly with [sqlc](https://sqlc.dev/) by using column overrides in your `sqlc.yaml` configuration:
