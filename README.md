@@ -56,6 +56,123 @@ ID types in this package can be used with [database/sql](https://pkg.go.dev/data
 
 When using the standard library SQL, IDs will be stored as their string representation and can be scanned and valued accordingly. When using pgx, both TEXT and UUID columns can be used directly. However, note that the type information is lost when using UUID columns, unless you take additional steps at the database layer. Be mindful of your identifier semantics, especially in complex JOIN queries.
 
+## Using with sqlc
+
+TypeIDs work seamlessly with [sqlc](https://sqlc.dev/) by using column overrides in your `sqlc.yaml` configuration:
+
+```yaml
+version: "2"
+sql:
+  - schema: "schema.sql"
+    queries: "queries"
+    engine: postgresql
+    gen:
+      go:
+        package: postgres
+        out: postgres
+        sql_package: pgx/v5
+        overrides:
+          - column: users.id
+            go_type:
+              import: github.com/yourorg/yourproject/internal/domain
+              type: "UserID"
+```
+
+With this configuration, sqlc will generate Go code that uses your TypeID type directly:
+
+```go
+package domain
+
+import "github.com/sumup/typeid"
+
+type UserPrefix struct{}
+
+func (UserPrefix) Prefix() string {
+    return "user"
+}
+
+type UserID = typeid.Sortable[UserPrefix]
+
+type User struct {
+    ID          UserID
+    Name        string
+    // ... other fields
+}
+```
+
+You can then use your TypeID types directly in your queries:
+
+```sql
+-- name: CreateUser :one
+INSERT INTO users (
+    id,
+    name
+) VALUES (
+    @id,
+    @name
+) RETURNING *;
+
+-- name: GetUser :one
+SELECT * FROM users
+WHERE id = @id;
+```
+
+And call them from Go:
+
+```go
+userID := typeid.Must(typeid.New[domain.UserID]())
+user, err := queries.CreateUser(ctx, postgres.CreateUserParams{
+    ID:          userID,
+    Name:        "Karl",
+})
+```
+
+## Using with oapi-codegen
+
+TypeIDs can be used with [oapi-codegen](https://github.com/oapi-codegen/oapi-codegen) to generate type-safe API clients and servers. Use the `x-go-type` and `x-go-type-import` extensions in your OpenAPI specification:
+
+```yaml
+paths:
+  /users/{user_id}:
+    parameters:
+      - in: path
+        name: user_id
+        description: The ID of the uesr to retrieve.
+        required: true
+        schema:
+          type: string
+          example: user_01hf98sp99fs2b4qf2jm11hse4
+          x-go-type: "domain.UserID"
+          x-go-type-import:
+            path: github.com/yourorg/yourproject/internal/domain
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the user.
+          example: user_01hf98sp99fs2b4qf2jm11hse4
+          x-go-type: "domain.UserID"
+          x-go-type-import:
+            path: github.com/yourorg/yourproject/internal/domain
+        name:
+          type: string
+```
+
+The generated code will use your TypeID types:
+
+```go
+type User struct {
+    Id   domain.UserID `json:"id"`
+    Name string        `json:"name"`
+}
+```
+
+TypeIDs implement `encoding.TextMarshaler` and `encoding.TextUnmarshaler`, so they work with JSON encoding/decoding in generated API code without any additional configuration.
+
 ### Maintainers
 
 - [Johannes Gräger](mailto:johannes.graeger@sumup.com)
