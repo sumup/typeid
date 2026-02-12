@@ -167,6 +167,8 @@ func DecodeLower(s string) ([]byte, error) {
 // ensure the table is valid.
 //
 // Direct usage is discouraged. Use DecodeUpper or DecodeLower instead.
+//
+//nolint:gosec // G602 false positive: s length is validated and all indexes are fixed in this unrolled decoder.
 func Decode(s string, idxTable [256]byte) ([]byte, error) {
 	if len(s) != 26 {
 		return nil, ErrInvalidLength
@@ -203,7 +205,7 @@ func Decode(s string, idxTable [256]byte) ([]byte, error) {
 		return nil, ErrInvalidChar
 	}
 
-	res := make([]byte, 16)
+	var res [16]byte
 
 	res[0] = (idxTable[val[0]] << 5) | idxTable[val[1]]
 	res[1] = (idxTable[val[2]] << 3) | (idxTable[val[3]] >> 2)
@@ -222,5 +224,5 @@ func Decode(s string, idxTable [256]byte) ([]byte, error) {
 	res[14] = (idxTable[val[22]] << 7) | (idxTable[val[23]] << 2) | (idxTable[val[24]] >> 3)
 	res[15] = (idxTable[val[24]] << 5) | idxTable[val[25]]
 
-	return res, nil
+	return res[:], nil
 }
