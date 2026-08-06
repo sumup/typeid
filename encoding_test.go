@@ -230,3 +230,126 @@ func TestJSON(t *testing.T) {
 		t.Errorf("json decoding should return the original uuid string: expected %s, got %s", str, decoded.String())
 	}
 }
+
+const typeIDCompositeOID = uint32(999001)
+
+func newTypeIDCompositeMap(t *testing.T) (*pgtype.Map, *pgtype.CompositeCodec) {
+	t.Helper()
+
+	m := pgtype.NewMap()
+	varcharType, ok := m.TypeForOID(pgtype.VarcharOID)
+	if !ok {
+		t.Fatal("varchar type not found in pgtype map")
+	}
+	uuidType, ok := m.TypeForOID(pgtype.UUIDOID)
+	if !ok {
+		t.Fatal("uuid type not found in pgtype map")
+	}
+
+	codec := &pgtype.CompositeCodec{
+		Fields: []pgtype.CompositeCodecField{
+			{Name: "type", Type: varcharType},
+			{Name: "uuid", Type: uuidType},
+		},
+	}
+	m.RegisterType(&pgtype.Type{Name: "typeid", OID: typeIDCompositeOID, Codec: codec})
+	return m, codec
+}
+
+func TestTypeID_Pgx_Composite(t *testing.T) {
+	t.Parallel()
+
+	original := MustNew[UserID]()
+
+	formats := []struct {
+		name string
+		code int16
+	}{
+		{name: "binary", code: pgtype.BinaryFormatCode},
+		{name: "text", code: pgtype.TextFormatCode},
+	}
+
+	for _, format := range formats {
+		tc := format
+		t.Run("round trip "+tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			m, codec := newTypeIDCompositeMap(t)
+			encodePlan := codec.PlanEncode(m, typeIDCompositeOID, tc.code, original)
+			if encodePlan == nil {
+				t.Fatalf("PlanEncode returned nil for %s format", tc.name)
+			}
+			buf, err := encodePlan.Encode(original, nil)
+			if err != nil {
+				t.Fatalf("encode: unexpected error:\n%+v", err)
+			}
+
+			var target UserID
+			scanPlan := codec.PlanScan(m, typeIDCompositeOID, tc.code, &target)
+			if scanPlan == nil {
+				t.Fatalf("PlanScan returned nil for %s format", tc.name)
+			}
+			if err := scanPlan.Scan(buf, &target); err != nil {
+				t.Fatalf("scan: unexpected error:\n%+v", err)
+			}
+			if original != target {
+				t.Errorf("round trip: expected %v, got %v", original, target)
+			}
+		})
+	}
+
+	t.Run("prefix mismatch", func(t *testing.T) {
+		t.Parallel()
+
+		m, codec := newTypeIDCompositeMap(t)
+		encodePlan := codec.PlanEncode(m, typeIDCompositeOID, pgtype.BinaryFormatCode, original)
+		buf, err := encodePlan.Encode(original, nil)
+		if err != nil {
+			t.Fatalf("encode: unexpected error:\n%+v", err)
+		}
+
+		var target AccountID
+		scanPlan := codec.PlanScan(m, typeIDCompositeOID, pgtype.BinaryFormatCode, &target)
+		err = scanPlan.Scan(buf, &target)
+		if err == nil {
+			t.Fatal("expected prefix mismatch error")
+		}
+	})
+
+	t.Run("null composite", func(t *testing.T) {
+		t.Parallel()
+
+		m, codec := newTypeIDCompositeMap(t)
+		var target UserID
+		scanPlan := codec.PlanScan(m, typeIDCompositeOID, pgtype.BinaryFormatCode, &target)
+		err := scanPlan.Scan(nil, &target)
+		if err == nil {
+			t.Fatal("must error on a nil scan")
+		}
+		expect := "cannot scan NULL into *typeid.Random[github.com/sumup/typeid.userPrefix]"
+		if !strings.Contains(err.Error(), expect) {
+			t.Errorf("error must contain %q, was %q", expect, err.Error())
+		}
+	})
+
+	t.Run("sortable round trip", func(t *testing.T) {
+		t.Parallel()
+
+		m, codec := newTypeIDCompositeMap(t)
+		sortable := MustNew[AccountID]()
+		encodePlan := codec.PlanEncode(m, typeIDCompositeOID, pgtype.BinaryFormatCode, sortable)
+		buf, err := encodePlan.Encode(sortable, nil)
+		if err != nil {
+			t.Fatalf("encode: unexpected error:\n%+v", err)
+		}
+
+		var target AccountID
+		scanPlan := codec.PlanScan(m, typeIDCompositeOID, pgtype.BinaryFormatCode, &target)
+		if err := scanPlan.Scan(buf, &target); err != nil {
+			t.Fatalf("scan: unexpected error:\n%+v", err)
+		}
+		if sortable != target {
+			t.Errorf("round trip: expected %v, got %v", sortable, target)
+		}
+	})
+}

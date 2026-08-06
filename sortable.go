@@ -81,3 +81,25 @@ func (s Sortable[P]) UUIDValue() (pgtype.UUID, error) {
 func (s *Sortable[P]) ScanUUID(v pgtype.UUID) error {
 	return scanUUID(s, v)
 }
+
+// IsNull implements [pgtype.CompositeIndexGetter] for PostgreSQL composite typeid columns.
+func (Sortable[P]) IsNull() bool {
+	return compositeIsNull()
+}
+
+// Index implements [pgtype.CompositeIndexGetter] for PostgreSQL composite typeid columns.
+// Index 0 is the type prefix; index 1 is the UUID.
+func (s Sortable[P]) Index(i int) any {
+	return compositeIndex(s, i)
+}
+
+// ScanNull implements [pgtype.CompositeIndexScanner] for PostgreSQL composite typeid columns.
+func (s *Sortable[P]) ScanNull() error {
+	return compositeScanNull(s)
+}
+
+// ScanIndex implements [pgtype.CompositeIndexScanner] for PostgreSQL composite typeid columns.
+// Index 0 is the type prefix; index 1 is the UUID.
+func (s *Sortable[P]) ScanIndex(i int) any {
+	return compositeScanIndex(s, i)
+}

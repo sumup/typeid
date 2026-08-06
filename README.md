@@ -54,7 +54,29 @@ fmt.Println(userID) // --> user_01hf98sp99fs2b4qf2jm11hse4
 
 ID types in this package can be used with [database/sql](https://pkg.go.dev/database/sql) and [github.com/jackc/pgx](https://pkg.go.dev/github.com/jackc/pgx/v5).
 
-When using the standard library SQL, IDs will be stored as their string representation and can be scanned and valued accordingly. When using pgx, both TEXT and UUID columns can be used directly. However, note that the type information is lost when using UUID columns, unless you take additional steps at the database layer. Be mindful of your identifier semantics, especially in complex JOIN queries.
+When using the standard library SQL, IDs will be stored as their string representation and can be scanned and valued accordingly. When using pgx, TEXT and UUID columns can be used directly. With UUID columns the type prefix is not stored in the database unless you take additional steps at the database layer.
+
+To keep both the type prefix and UUID in PostgreSQL, define a composite type and register it on your pgx connections (for example in `AfterConnect`). This package only implements the composite field accessors; type loading and OID registration stay in the integrating application:
+
+```sql
+CREATE TYPE typeid AS (
+    "type" varchar(63),
+    "uuid" UUID
+);
+```
+
+```go
+config.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+    t, err := conn.LoadType(ctx, "typeid")
+    if err != nil {
+        return err
+    }
+    conn.TypeMap().RegisterType(t)
+    return nil
+}
+```
+
+`typeid.Sortable` and `typeid.Random` implement pgx's `CompositeIndexGetter` and `CompositeIndexScanner` interfaces, so pgx's CompositeCodec can encode and scan composite typeid columns.
 
 If using `pgx` with PostgreSQL, you can generate UUIDv4 (for usage with `typeid.Random`) as the default value for your primary key:
 
