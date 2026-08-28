@@ -33,7 +33,7 @@ func TestEncodeDecode(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			for i := 0; i < 1000; i++ {
+			for range 1000 {
 				// Generate 16 random bytes
 				data := make([]byte, 16)
 				_, err := rand.Read(data)
@@ -61,7 +61,7 @@ func TestEncodeDecode(t *testing.T) {
 				if err != nil {
 					t.Errorf("unexpected error during decode:\n%+v", err)
 				}
-				for i := 0; i < 16; i++ {
+				for i := range 16 {
 					if data[i] != decoded[i] {
 						t.Errorf("decoded value is not equal to original:\nExpected: %v\nActual: %v", data[i], decoded[i])
 					}
@@ -72,7 +72,7 @@ func TestEncodeDecode(t *testing.T) {
 
 	encoder := base32.NewEncoding("0123456789ABCDEFGHJKMNPQRSTVWXYZ")
 
-	for i := 0; i < 1000; i++ {
+	for range 1000 {
 		// Generate 16 random bytes
 		data := make([]byte, 16)
 		_, err := rand.Read(data)
@@ -100,7 +100,7 @@ func TestEncodeDecode(t *testing.T) {
 		if err != nil {
 			t.Errorf("unexpected error during decode:\n%+v", err)
 		}
-		for i := 0; i < 16; i++ {
+		for i := range 16 {
 			if data[i] != decoded[i] {
 				t.Errorf("decoded value is not equal to original:\nExpected: %v\nActual: %v", data[i], decoded[i])
 			}

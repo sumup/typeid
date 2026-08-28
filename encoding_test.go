@@ -133,8 +133,8 @@ func TestTypeID_SQL_Scan(t *testing.T) {
 		t.Fatalf("create UserID: unexpected error:\n%+v", err)
 	}
 
-	scannerType := reflect.TypeOf((*sql.Scanner)(nil)).Elem()
-	if !reflect.TypeOf(&UserID{}).Implements(scannerType) {
+	scannerType := reflect.TypeFor[sql.Scanner]()
+	if !reflect.TypeFor[*UserID]().Implements(scannerType) {
 		t.Fatalf("typeid.TypeID instantiation implements the `sql.Scanner` interface")
 	}
 
