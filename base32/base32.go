@@ -167,8 +167,6 @@ func DecodeLower(s string) ([]byte, error) {
 // ensure the table is valid.
 //
 // Direct usage is discouraged. Use DecodeUpper or DecodeLower instead.
-//
-//nolint:gosec // G602 false positive: s length is validated and all indexes are fixed in this unrolled decoder.
 func Decode(s string, idxTable [256]byte) ([]byte, error) {
 	if len(s) != 26 {
 		return nil, ErrInvalidLength
