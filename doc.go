@@ -17,8 +17,29 @@
 // ID types in this package can be used with [database/sql] and [github.com/jackc/pgx].
 //
 // When using the standard library sql, IDs will be stored as their string representation and can be scanned and valued accordingly.
-// When using pgx, both TEXT and UUID columns can be used directly. However, note that the type information is lost when using UUID columns, unless you take additional steps
-// at the database layer. Be mindful of your identifier semantics, especially in complex JOIN queries.
+// When using pgx, TEXT and UUID columns can be used directly. With UUID columns the type prefix is not stored in the database
+// unless you take additional steps at the database layer.
+//
+// To keep both the type prefix and UUID in PostgreSQL, define a composite type and register it on your pgx
+// connections (for example in AfterConnect). This package only implements the composite field accessors;
+// type loading and OID registration stay in the integrating application:
+//
+//	CREATE TYPE typeid AS (
+//	    "type" varchar(63),
+//	    "uuid" UUID
+//	);
+//
+//	config.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+//	    t, err := conn.LoadType(ctx, "typeid")
+//	    if err != nil {
+//	        return err
+//	    }
+//	    conn.TypeMap().RegisterType(t)
+//	    return nil
+//	}
+//
+// [Sortable] and [Random] implement pgx's CompositeIndexGetter and CompositeIndexScanner interfaces, so pgx's
+// CompositeCodec can encode and scan composite typeid columns.
 //
 // # Usage
 //

@@ -90,3 +90,64 @@ func scanUUID[T idImplementation[P], P Prefix](dst *T, v pgtype.UUID) error {
 
 	return nil
 }
+
+type prefixScanner[P Prefix] struct{}
+
+func (prefixScanner[P]) ScanText(v pgtype.Text) error {
+	if !v.Valid {
+		return fmt.Errorf("cannot scan NULL prefix")
+	}
+
+	var p P
+	if v.String != p.Prefix() {
+		return fmt.Errorf(
+			"scan composite typeid: prefix mismatch: got %q, expected %q",
+			v.String,
+			p.Prefix(),
+		)
+	}
+
+	return nil
+}
+
+// compositeUUIDScanner sets the UUID field of a PostgreSQL typeid composite.
+type compositeUUIDScanner[T idImplementation[P], P Prefix] struct {
+	dst *T
+}
+
+func (s compositeUUIDScanner[T, P]) ScanUUID(v pgtype.UUID) error {
+	return scanUUID(s.dst, v)
+}
+
+func compositeIsNull() bool {
+	return false
+}
+
+func compositeIndex[T idImplementation[P], P Prefix](id T, i int) any {
+	switch i {
+	case 0:
+		return getPrefix[P]()
+	case 1:
+		return pgtype.UUID{
+			Bytes: id.UUID(),
+			Valid: true,
+		}
+	default:
+		panic(fmt.Errorf("illegal composite index %d", i))
+	}
+}
+
+func compositeScanNull[T idImplementation[P], P Prefix](dst *T) error {
+	return fmt.Errorf("cannot scan NULL into %T", dst)
+}
+
+func compositeScanIndex[T idImplementation[P], P Prefix](dst *T, i int) any {
+	switch i {
+	case 0:
+		return new(prefixScanner[P])
+	case 1:
+		return compositeUUIDScanner[T, P]{dst: dst}
+	default:
+		panic(fmt.Errorf("illegal composite scan index %d", i))
+	}
+}

@@ -81,3 +81,25 @@ func (r Random[P]) UUIDValue() (pgtype.UUID, error) {
 func (r *Random[P]) ScanUUID(v pgtype.UUID) error {
 	return scanUUID(r, v)
 }
+
+// IsNull implements [pgtype.CompositeIndexGetter] for PostgreSQL composite typeid columns.
+func (Random[P]) IsNull() bool {
+	return compositeIsNull()
+}
+
+// Index implements [pgtype.CompositeIndexGetter] for PostgreSQL composite typeid columns.
+// Index 0 is the type prefix; index 1 is the UUID.
+func (r Random[P]) Index(i int) any {
+	return compositeIndex(r, i)
+}
+
+// ScanNull implements [pgtype.CompositeIndexScanner] for PostgreSQL composite typeid columns.
+func (r *Random[P]) ScanNull() error {
+	return compositeScanNull(r)
+}
+
+// ScanIndex implements [pgtype.CompositeIndexScanner] for PostgreSQL composite typeid columns.
+// Index 0 is the type prefix; index 1 is the UUID.
+func (r *Random[P]) ScanIndex(i int) any {
+	return compositeScanIndex(r, i)
+}
