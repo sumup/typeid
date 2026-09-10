@@ -4,6 +4,9 @@ issues:
   max-same-issues: 0
   uniq-by-line: true
 formatters:
+  exclusions:
+    paths:
+      - internal/uuid
   enable:
     - gofmt
     - goimports
@@ -117,6 +120,8 @@ linters:
       multi-func: false
   exclusions:
     generated: lax
+    paths:
+      - internal/uuid
     presets:
       - comments
       - common-false-positives

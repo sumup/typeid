@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"unsafe"
 
-	"github.com/gofrs/uuid/v5"
+	"github.com/sumup/typeid/internal/uuid"
 )
 
 // processor is an internal structure to handle different types of typedIDs, as they
@@ -17,7 +17,7 @@ type processor struct {
 	// b32Decode decode a UUID using the resp. base32 decoding.
 	b32Decode func(string) (uuid.UUID, error)
 	// Generates a new universal unique identifier.
-	generateUUID func() (uuid.UUID, error)
+	generateUUID func() uuid.UUID
 }
 
 func from[P Prefix](suffix string, p *processor) (typedID[P], error) {
@@ -37,23 +37,16 @@ func from[P Prefix](suffix string, p *processor) (typedID[P], error) {
 
 // generate generates
 func generate[P Prefix](p *processor) (typedID[P], error) {
-	var err error
-
-	if err = validatePrefix(getPrefix[P]()); err != nil {
+	if err := validatePrefix(getPrefix[P]()); err != nil {
 		return nilID[P](), err
 	}
 
-	tid := typedID[P]{}
-	tid.uuid, err = p.generateUUID()
-	if err != nil {
-		return nilID[P](), err
-	}
-	return tid, nil
+	return typedID[P]{uuid: p.generateUUID()}, nil
 }
 
 func nilID[P Prefix]() typedID[P] {
 	return typedID[P]{
-		uuid: uuid.Nil,
+		uuid: uuid.UUID{},
 	}
 }
 
@@ -78,11 +71,11 @@ func validatePrefix(prefix string) error {
 
 func decodeSuffix(suffix string, p *processor) (uuid.UUID, error) {
 	if len(suffix) != suffixStrLen {
-		return uuid.Nil, fmt.Errorf("invalid suffix: %s. Suffix length is %d, expected %d", suffix, len(suffix), suffixStrLen)
+		return uuid.UUID{}, fmt.Errorf("invalid suffix: %s. Suffix length is %d, expected %d", suffix, len(suffix), suffixStrLen)
 	}
 
 	if suffix[0] > '7' {
-		return uuid.Nil, fmt.Errorf("invalid suffix: '%s'. Suffix must start with a 0-7 digit to avoid overflows", suffix)
+		return uuid.UUID{}, fmt.Errorf("invalid suffix: '%s'. Suffix must start with a 0-7 digit to avoid overflows", suffix)
 	}
 
 	return p.b32Decode(suffix)

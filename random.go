@@ -3,10 +3,10 @@ package typeid
 import (
 	"database/sql/driver"
 
-	"github.com/gofrs/uuid/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 
 	"github.com/sumup/typeid/base32"
+	"github.com/sumup/typeid/internal/uuid"
 )
 
 // Random represents an unique identifier that is entirely random.
@@ -23,9 +23,9 @@ var randomIDProc = &processor{
 	b32Decode: func(s string) (uuid.UUID, error) {
 		decoded, err := base32.DecodeUpper(s)
 		if err != nil {
-			return uuid.Nil, err
+			return uuid.UUID{}, err
 		}
-		return uuid.FromBytes(decoded)
+		return uuid.UUID(decoded), nil
 	},
 	generateUUID: uuid.NewV4,
 }

@@ -5,8 +5,6 @@ import (
 	"reflect"
 	"testing"
 	"testing/quick"
-
-	"github.com/gofrs/uuid/v5"
 )
 
 const (
@@ -45,16 +43,16 @@ func TestTypeID_New(t *testing.T) {
 	if err != nil {
 		t.Fatalf("create UserID: unexpected error:\n%+v", err)
 	}
-	if uuid.V4 != userID.UUID().Version() {
-		t.Errorf("expected UUIDv4, got version byte: %x", userID.UUID().Version())
+	if version := userID.UUID()[6] >> 4; version != 4 {
+		t.Errorf("expected UUIDv4, got version byte: %x", version)
 	}
 
 	accountID, err := New[AccountID]()
 	if err != nil {
 		t.Fatalf("create AserID: unexpected error:\n%+v", err)
 	}
-	if uuid.V7 != accountID.UUID().Version() {
-		t.Errorf("expected UUIDv7, got version byte: %x", accountID.UUID().Version())
+	if version := accountID.UUID()[6] >> 4; version != 7 {
+		t.Errorf("expected UUIDv7, got version byte: %x", version)
 	}
 }
 
@@ -162,7 +160,8 @@ func fromUUIDStringTester[T idImplementation[P], P Prefix](t *testing.T) func(wi
 func fromUUIDBytesTester[T idImplementation[P], P Prefix](t *testing.T) func(wid wrappedID[T, P]) bool {
 	t.Helper()
 	return func(wid wrappedID[T, P]) bool {
-		parsedID, err := FromUUIDBytes[T](wid.id.UUID().Bytes())
+		u := wid.id.UUID()
+		parsedID, err := FromUUIDBytes[T](u[:])
 		if err != nil {
 			t.Fatalf("parse type id from UUID bytes: unexpected error:\n%+v", err)
 		}
@@ -180,31 +179,8 @@ func (w wrappedID[T, P]) ID() T {
 	return w.id
 }
 
-func (w wrappedID[T, P]) Generate(rnd *rand.Rand, _ int) reflect.Value {
-	// gen the processor to determine the UUID version to use
-	procGenUUID, err := (T{}).processor().generateUUID()
-	if err != nil {
-		panic(err)
-	}
-	version := procGenUUID.Version()
-
-	uuidGen := uuid.NewGenWithOptions(uuid.WithRandomReader(rnd))
-	var uid uuid.UUID
-
-	switch version {
-	case uuid.V4:
-		if uid, err = uuidGen.NewV4(); err != nil {
-			panic("failed to generate uuid v4")
-		}
-	case uuid.V7:
-		if uid, err = uuidGen.NewV7(); err != nil {
-			panic("failed to generate uuid v7")
-		}
-	default:
-		panic("unknown uuid version")
-	}
-
-	tid, err := FromUUID[T](uid)
+func (w wrappedID[T, P]) Generate(_ *rand.Rand, _ int) reflect.Value {
+	tid, err := FromUUID[T]((T{}).processor().generateUUID())
 	if err != nil {
 		panic(err)
 	}

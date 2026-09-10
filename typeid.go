@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/gofrs/uuid/v5"
+	"github.com/sumup/typeid/internal/uuid"
 )
 
 var (
@@ -99,7 +99,9 @@ func FromString[T instance[P], P Prefix](s string) (T, error) {
 	return T{tid}, nil
 }
 
-func FromUUID[T instance[P], P Prefix](u uuid.UUID) (T, error) {
+// FromUUID creates a TypeID from a 16-byte UUID, including named array types
+// from other UUID packages. It does not validate the UUID version or variant.
+func FromUUID[T instance[P], P Prefix](u [16]byte) (T, error) {
 	if err := validatePrefix(getPrefix[P]()); err != nil {
 		return Nil[T](), err
 	}
@@ -108,7 +110,7 @@ func FromUUID[T instance[P], P Prefix](u uuid.UUID) (T, error) {
 }
 
 func FromUUIDStr[T instance[P], P Prefix](uuidStr string) (T, error) {
-	u, err := uuid.FromString(uuidStr)
+	u, err := uuid.Parse(uuidStr)
 	if err != nil {
 		return Nil[T](), fmt.Errorf("%w: uuid from string: %s", ErrParse, err.Error())
 	}
@@ -116,9 +118,8 @@ func FromUUIDStr[T instance[P], P Prefix](uuidStr string) (T, error) {
 }
 
 func FromUUIDBytes[T instance[P], P Prefix](bytes []byte) (T, error) {
-	u, err := uuid.FromBytes(bytes)
-	if err != nil {
-		return Nil[T](), fmt.Errorf("%w: uuid from bytes: %s", ErrParse, err.Error())
+	if len(bytes) != 16 {
+		return Nil[T](), fmt.Errorf("%w: uuid from bytes: expected 16 bytes, got %d", ErrParse, len(bytes))
 	}
-	return FromUUID[T](u)
+	return FromUUID[T]([16]byte(bytes))
 }

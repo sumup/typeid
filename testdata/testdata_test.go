@@ -6,8 +6,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/gofrs/uuid/v5"
 	"github.com/sumup/typeid"
+	"github.com/sumup/typeid/internal/uuid"
 )
 
 type testPrefix struct{}

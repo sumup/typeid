@@ -3,14 +3,15 @@ package typeid
 import (
 	"database/sql/driver"
 
-	"github.com/gofrs/uuid/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 
 	"github.com/sumup/typeid/base32"
+	"github.com/sumup/typeid/internal/uuid"
 )
 
 // Sortable represents an unique identifier that is k-sortable.
 // Internally, it's based on UUIDv7.
+// Generated IDs sort in increasing order unless the system clock moves backward.
 type Sortable[P Prefix] struct{ typedID[P] }
 
 var sortableIDProc = &processor{
@@ -23,9 +24,9 @@ var sortableIDProc = &processor{
 	b32Decode: func(s string) (uuid.UUID, error) {
 		decoded, err := base32.DecodeLower(s)
 		if err != nil {
-			return uuid.Nil, err
+			return uuid.UUID{}, err
 		}
-		return uuid.FromBytes(decoded)
+		return uuid.UUID(decoded), nil
 	},
 	generateUUID: uuid.NewV7,
 }

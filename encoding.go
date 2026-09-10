@@ -3,8 +3,9 @@ package typeid
 import (
 	"fmt"
 
-	"github.com/gofrs/uuid/v5"
 	"github.com/jackc/pgx/v5/pgtype"
+
+	"github.com/sumup/typeid/internal/uuid"
 )
 
 // idImplementation is a helper constraint asserting the existence of the typeID methods on the type.
